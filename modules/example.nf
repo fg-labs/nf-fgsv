@@ -23,6 +23,6 @@ process EXAMPLE {
     def prefix = "${meta.id}"
     """
     echo "processing data for ${meta.id}"
-    cat ${infile} > ${prefix}_out.txt
+    echo ${infile} > ${prefix}_out.txt
     """
 }

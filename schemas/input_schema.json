@@ -15,17 +15,17 @@
           "id"
         ]
       },
-      "data": {
+      "bam": {
         "type": "string",
-        "pattern": "^\\S+\\.txt$",
+        "pattern": "^\\S+\\.bam$",
         "exists": true,
         "format": "file-path",
-        "errorMessage": "Data file must be provided, cannot contain spaces, and must have a '.txt' extension"
+        "errorMessage": "BAM file must be provided, cannot contain spaces, and must have a '.bam' extension"
       }
     },
     "required": [
       "sample",
-      "data"
+      "bam"
     ]
   }
 }

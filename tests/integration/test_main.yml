@@ -3,4 +3,4 @@
   files:
     - path: results/sample1/sample1_out.txt
       contains:
-        - "Hello, World!"
+        - "sample1.bam"
