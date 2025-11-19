@@ -1,0 +1,40 @@
+[workspace]
+name = "nf-fgsv"
+channels = [
+    "conda-forge",
+    "bioconda",
+    "nodefaults",
+]
+platforms = [
+    "linux-64",
+    "osx-arm64",
+    "osx-64",
+]
+
+[activation.env]
+# Ensure Nextflow and any JVM-based applications (e.g. fgbio-based JAR files)
+# are using the JVM provided by the pixi environment
+JAVA_HOME = "${PIXI_PROJECT_ROOT}/.pixi/envs/${PIXI_ENVIRONMENT_NAME}/lib/jvm"
+PATH = "${PIXI_PROJECT_ROOT}/.pixi/envs/${PIXI_ENVIRONMENT_NAME}/lib/jvm/bin:$PATH"
+
+[feature.nextflow.dependencies]
+# This feature provides Nextflow, for executing the pipeline.
+openjdk = "~=21.0"
+nextflow = ">=25.10.0"
+
+[feature.pytest_workflow.dependencies]
+# This feature supports integration testing of the Nextflow workflow.
+# Python and pytest are necessary to orchestrate testing via pytest-workflow.
+python = ">=3.12.10,<3.13"
+pytest = ">=8.3.5,<9"
+pytest-workflow = ">=2.1.0,<3"
+
+[environments]
+default = { features = ["nextflow", "pytest_workflow"] }
+
+[tasks]
+# Run integration tests with the appropriate Nextflow profiles
+wf-test = "pytest --git-aware --nf_profile 'docker' tests/integration/"
+# Make it easier to run the Nextflow workflow
+nf-workflow = "nextflow run main.nf"
+

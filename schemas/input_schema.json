@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/org/repo/schema/input_schema.json",
+  "title": "params.input schema",
+  "description": "Schema for the file provided with params.input",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "sample": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "errorMessage": "Sample name must be provided and cannot contain spaces",
+        "meta": [
+          "id"
+        ]
+      },
+      "data": {
+        "type": "string",
+        "pattern": "^\\S+\\.txt$",
+        "exists": true,
+        "format": "file-path",
+        "errorMessage": "Data file must be provided, cannot contain spaces, and must have a '.txt' extension"
+      }
+    },
+    "required": [
+      "sample",
+      "data"
+    ]
+  }
+}

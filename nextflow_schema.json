@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/org/repo/master/nextflow_schema.json",
+  "title": "nf-fgsv workflow parameters",
+  "description": "Nextflow workflow for running fgsv.",
+  "type": "object",
+  "$defs": {
+    "main": {
+      "title": "Main workflow parameters",
+      "type": "object",
+      "required": [
+        "input"
+      ],
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "Path to tab-separated file containing information about the samples in the experiment.",
+          "format": "file-path",
+          "pattern": ".*.tsv$",
+          "exists": true,
+          "schema": "schemas/input_schema.json"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/$defs/main"
+    }
+  ]
+}

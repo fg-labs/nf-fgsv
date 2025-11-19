@@ -1,0 +1,17 @@
+# Python compiled & optimized files
+*.pyc
+*.pyo
+
+# Build artifacts
+build/
+dist/
+
+# MyPy Cache directory
+.mypy_cache
+
+# Nextflow
+.nextflow*
+work/
+
+# MacOS
+.DS_Store
