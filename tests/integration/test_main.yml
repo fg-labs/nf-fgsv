@@ -1,6 +1,4 @@
 - name: basic
   command: bash -c 'nextflow -c "${PWD}/tests/nextflow.config" run main.nf -params-file "${PWD}/tests/integration/params.yml" -profile $PROFILES'
   files:
-    - path: results/sample1/sample1_out.txt
-      contains:
-        - "sample1.bam"
+    - path: results/sample1/sample1_sorted.bam

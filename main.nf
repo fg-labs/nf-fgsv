@@ -5,7 +5,7 @@ include {
     samplesheetToList;
 } from 'plugin/nf-schema'
 
-include { EXAMPLE } from './modules/example.nf'
+include { COORDINATE_SORT } from './modules/coordinate_sort.nf'
 
 workflow {
     main:
@@ -15,8 +15,9 @@ workflow {
     // Print summary of supplied parameters
     log.info paramsSummaryLog(workflow)
 
-    channel.fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
-        | EXAMPLE
+    ch_input_bams = channel.fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
+    
+    COORDINATE_SORT(ch_input_bams)
 
     publish:
     sample_outputs = Channel.topic('sample_outputs')

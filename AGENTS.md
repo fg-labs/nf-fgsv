@@ -21,4 +21,31 @@ Nextflow processes should have doc strings like:
   */
 ```
 
+Input and output tuples should be formatted in doc strings as
+```
+/** MODULE_NAME
+  *
+  * One sentence description.
+  *
+  * Inputs:
+  *   - - input_tuple_element_0: description
+  *     - input_tuple_element_1: description
+  * Ouptputs:
+  *   - - output_tuple_element_0: description
+  *     - output_tuple_element_1: description
+  */
+```
+
 Nextflow files can be lint with `pixi run nextflow lint /path/to/file`
+
+Bash code in script blocks should be formatted to have one parameter/flag per line. As in:
+
+```
+"""
+samtools \\
+    sort \\
+    -@ ${task.cpus} \\
+    -o ${prefix}_sorted.bam \\
+    ${bam}
+"""
+```
