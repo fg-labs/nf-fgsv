@@ -16,8 +16,6 @@ To install:
 pixi install
 ```
 
-
-
 ## Run the Workflow
 
 To save on typing, a pixi task is available which aliases `nextflow run main.nf`.
