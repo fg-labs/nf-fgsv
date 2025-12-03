@@ -17,8 +17,9 @@ workflow {
     log.info paramsSummaryLog(workflow)
 
     ch_input_bams = channel.fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
-    
+
     COORDINATE_SORT(ch_input_bams)
+
     SV_PILEUP(COORDINATE_SORT.out.bam)
 
     publish:
