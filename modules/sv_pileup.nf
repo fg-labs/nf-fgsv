@@ -17,6 +17,7 @@ process SV_PILEUP {
 
     output:
         tuple val(meta), path("*_svpileup.txt"), emit: txt, topic: 'sample_outputs'
+        tuple val(meta), path("*_svpileup.bam"), emit: bam, topic: 'sample_outputs'
 
     script:
     def prefix = "${meta.id}"
