@@ -2,3 +2,10 @@
   command: bash -c 'nextflow -c "${PWD}/tests/nextflow.config" run main.nf -params-file "${PWD}/tests/integration/params.yml" -profile $PROFILES'
   files:
     - path: results/sample1/sample1_sorted.bam
+    - path: results/sample1/sample1_svpileup.txt
+      md5sum: 133a8689e6eb219d2ac5bbe957ab5202
+    - path: results/sample1/sample1_svpileup.bam
+    - path: results/sample1/sample1_svpileup.aggregate.txt
+      md5sum: abf72d077f639f81117fac251bd4075d
+    - path: results/sample1/sample1_svpileup.aggregate.bedpe
+      md5sum: 27d86bf567f76093787e7581892c3762
