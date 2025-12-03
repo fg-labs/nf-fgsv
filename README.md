@@ -39,18 +39,12 @@ Several default profiles are available:
 
 A full description of input parameters is available using the workflow `--help` parameter, `pixi run nf-workflow --help`.
 
-> [!WARNING]
-> **After creating a new project, describe workflow input file format here. **
->
-> Add pipeline parameters to the [nextflow config](nextflow.config) with appropriate defaults if needed, or `null` if the parameter is required, and update the [parameter schema](nextflow_schema.json).
-> Expand the [input schema](schemas/input_schema.json) to include additional required (and optional) fields.
-
 The required columns in the `--input` samplesheet are:
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `sample` | String, no whitespace | Sample identifier |
-| `data` | Absolute path | Path to the data file for this sample (may be an AWS S3 path) |
+| `bam` | Absolute path | Path to the BAM file for this sample (may be an AWS S3 path) |
 
 ### Parameter files
 
@@ -78,11 +72,6 @@ pixi run \
         -output-dir results
 ```
 
-> [!WARNING]
-> **After creating a new project, describe workflow outputs here.**
->
-> Consider using a `tree` output style format to describe the expected output file structure, URLs to third party file format descriptions, and tables as in [Inputs](#inputs) for custom output file formats.
-
 <details>
 <summary>Click to toggle output directory structure</summary>
 
@@ -90,10 +79,24 @@ pixi run \
 ```console
 results
 └── {sample_name}
-    └── {sample_name}_out.txt    # sample output data
+    ├── {sample_name}_sorted.bam                # Coordinate-sorted BAM file
+    ├── {sample_name}_svpileup.txt              # SvPileup breakpoint candidates
+    ├── {sample_name}_svpileup.bam              # BAM with SV tags from SvPileup
+    ├── {sample_name}_svpileup.aggregate.txt    # Aggregated/merged breakpoint pileups
+    └── {sample_name}_svpileup.aggregate.bedpe  # Aggregated pileups in BEDPE format
 ```
 
 </details>
+
+### Output File Descriptions
+
+| File | Description |
+|------|-------------|
+| `*_sorted.bam` | Input BAM sorted by genomic coordinates using samtools sort |
+| `*_svpileup.txt` | Candidate structural variant breakpoints identified by [fgsv SvPileup](https://github.com/fulcrumgenomics/fgsv) |
+| `*_svpileup.bam` | BAM file with SV-related tags added by SvPileup |
+| `*_svpileup.aggregate.txt` | Merged breakpoint pileups from [fgsv AggregateSvPileup](https://github.com/fulcrumgenomics/fgsv) |
+| `*_svpileup.aggregate.bedpe` | Aggregated pileups converted to [BEDPE format](https://bedtools.readthedocs.io/en/latest/content/general-usage.html#bedpe-format) |
 
 ## Contributing
 
