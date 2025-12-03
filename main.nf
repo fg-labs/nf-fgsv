@@ -6,6 +6,7 @@ include {
 } from 'plugin/nf-schema'
 
 include { COORDINATE_SORT } from './modules/coordinate_sort.nf'
+include { SV_PILEUP } from './modules/sv_pileup.nf'
 
 workflow {
     main:
@@ -18,6 +19,7 @@ workflow {
     ch_input_bams = channel.fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
     
     COORDINATE_SORT(ch_input_bams)
+    SV_PILEUP(COORDINATE_SORT.out.bam)
 
     publish:
     sample_outputs = Channel.topic('sample_outputs')
