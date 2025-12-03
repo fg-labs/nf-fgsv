@@ -5,7 +5,7 @@
   * Inputs:
   *   - - meta: map containing sample information (must include 'id')
   *     - bam: the input BAM file to be sorted
-  * Ouptputs:
+  * Outputs:
   *   - - meta: map containing sample information
   *     - bam: coordinate-sorted BAM file ('*_sorted.bam')
   */

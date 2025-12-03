@@ -5,3 +5,5 @@
     - path: results/sample1/sample1_svpileup.txt
       md5sum: 133a8689e6eb219d2ac5bbe957ab5202
     - path: results/sample1/sample1_svpileup.bam
+    - path: results/sample1/sample1_svpileup.aggregate.txt
+      md5sum: abf72d077f639f81117fac251bd4075d

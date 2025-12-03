@@ -16,7 +16,7 @@ Nextflow processes should have doc strings like:
   *
   * Inputs:
   *   - input1: description
-  * Ouptputs:
+  * Outputs:
   *   - output1: description
   */
 ```
@@ -30,7 +30,7 @@ Input and output tuples should be formatted in doc strings as
   * Inputs:
   *   - - input_tuple_element_0: description
   *     - input_tuple_element_1: description
-  * Ouptputs:
+  * Outputs:
   *   - - output_tuple_element_0: description
   *     - output_tuple_element_1: description
   */

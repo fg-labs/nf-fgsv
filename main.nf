@@ -5,6 +5,7 @@ include {
     samplesheetToList;
 } from 'plugin/nf-schema'
 
+include { AGGREGATE_SV_PILEUP } from './modules/aggregate_sv_pileup.nf'
 include { COORDINATE_SORT } from './modules/coordinate_sort.nf'
 include { SV_PILEUP } from './modules/sv_pileup.nf'
 
@@ -21,6 +22,11 @@ workflow {
     COORDINATE_SORT(ch_input_bams)
 
     SV_PILEUP(COORDINATE_SORT.out.bam)
+
+    ch_aggregate_input = SV_PILEUP.out.bam
+        .join(SV_PILEUP.out.txt)
+
+    AGGREGATE_SV_PILEUP(ch_aggregate_input)
 
     publish:
     sample_outputs = Channel.topic('sample_outputs')

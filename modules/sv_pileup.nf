@@ -5,7 +5,7 @@
   * Inputs:
   *   - - meta: map containing sample information (must include 'id')
   *     - bam: BAM file
-  * Ouptputs:
+  * Outputs:
   *   - - meta: map containing sample information
   *     - txt: SvPileup breakpoint output file ('*_svpileup.txt')
   */
