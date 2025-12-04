@@ -32,7 +32,7 @@ workflow {
     AGGREGATE_SV_PILEUP_TO_BEDPE(AGGREGATE_SV_PILEUP.out.txt)
 
     publish:
-    sample_outputs = Channel.topic('sample_outputs')
+    sample_outputs = channel.topic('sample_outputs')
 }
 
 output {
