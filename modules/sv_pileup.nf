@@ -9,15 +9,21 @@
   *   - - meta: map containing sample information
   *     - txt: SvPileup breakpoint output file ('*_svpileup.txt')
   */
+nextflow.preview.types = true
+
 process SV_PILEUP {
     container "community.wave.seqera.io/library/fgsv:0.2.1--c84e2a909a90a8c9"
 
     input:
-        tuple val(meta), path(bam)
+    (meta, bam): Tuple<?, Path>
 
     output:
-        tuple val(meta), path("*_svpileup.txt"), emit: txt, topic: 'sample_outputs'
-        tuple val(meta), path("*_svpileup.bam"), emit: bam, topic: 'sample_outputs'
+    txt = tuple(meta, file("*_svpileup.txt"))
+    bam = tuple(meta, file("*_svpileup.bam"))
+
+    topic:
+    tuple(meta, file("*_svpileup.txt")) >> 'sample_outputs'
+    tuple(meta, file("*_svpileup.bam")) >> 'sample_outputs'
 
     script:
     def prefix = "${meta.id}"

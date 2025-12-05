@@ -36,5 +36,5 @@ default = { features = ["nextflow", "pytest_workflow"] }
 # Run integration tests with the appropriate Nextflow profiles
 wf-test = "pytest --git-aware --nf_profile 'docker' tests/integration/"
 # Make it easier to run the Nextflow workflow
-nf-workflow = "nextflow run main.nf"
+nf-workflow = { cmd = "nextflow run main.nf", env = { NXF_SYNTAX_PARSER = "v2" } }
 

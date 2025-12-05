@@ -1,5 +1,5 @@
 - name: basic
-  command: bash -c 'nextflow -c "${PWD}/tests/nextflow.config" run main.nf -params-file "${PWD}/tests/integration/params.yml" -profile $PROFILES'
+  command: bash -c 'NXF_SYNTAX_PARSER=v2 nextflow -c "${PWD}/tests/nextflow.config" run main.nf -params-file "${PWD}/tests/integration/params.yml" -profile $PROFILES'
   files:
     - path: results/sample1/sample1_sorted.bam
     - path: results/sample1/sample1_svpileup.txt
