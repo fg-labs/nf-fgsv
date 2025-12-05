@@ -9,14 +9,19 @@
   *   - - meta: map containing sample information
   *     - bedpe: BEDPE format output file ('*_svpileup.aggregate.bedpe')
   */
+nextflow.preview.types = true
+
 process AGGREGATE_SV_PILEUP_TO_BEDPE {
     container "community.wave.seqera.io/library/fgsv:0.2.1--c84e2a909a90a8c9"
 
     input:
-        tuple val(meta), path(txt)
+    (meta, txt): Tuple<?, Path>
 
     output:
-        tuple val(meta), path("*_svpileup.aggregate.bedpe"), emit: bedpe, topic: 'sample_outputs'
+    bedpe = tuple(meta, file("*_svpileup.aggregate.bedpe"))
+
+    topic:
+    tuple(meta, file("*_svpileup.aggregate.bedpe")) >> 'sample_outputs'
 
     script:
     def prefix = "${meta.id}"
