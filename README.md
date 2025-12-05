@@ -2,7 +2,10 @@
 
 [![Workflow CI](https://github.com/fulcrumgenomics/nf-fgsv/actions/workflows/nextflow_checks.yml/badge.svg?branch=main)](https://github.com/fulcrumgenomics/nf-fgsv/actions/workflows/nextflow_checks.yml?query=branch%3Amain)  [![Nextflow Version](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A525.10.0-23aa62.svg)](https://www.nextflow.io/)  [![Pixi](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json&style=flat-square)](https://pixi.sh/)
 
-Nextflow workflow for running fgsv.
+> [!NOTE]  
+> This repository is primarily for testing the latest Nextflow features and the workflow is relatively simple.
+
+This is a Nextflow workflow for running [fgsv](https://github.com/fulcrumgenomics/fgsv) on a BAM file to gather evidence for structural variation via breakpoint detection.
 
 ## Set up Environment
 
