@@ -1,3 +1,5 @@
+nextflow.preview.types = true
+
 /**
  * Sort a BAM file by genomic coordinates using samtools sort.
  *
@@ -5,8 +7,6 @@
  * @param bam     Input BAM file to be sorted
  * @return sorted Record of meta and the coordinate-sorted BAM file (bam)
  */
-nextflow.preview.types = true
-
 process COORDINATE_SORT {
     container "quay.io/biocontainers/samtools:1.21--h50ea8bc_0"
 

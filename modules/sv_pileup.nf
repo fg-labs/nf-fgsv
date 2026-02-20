@@ -1,3 +1,5 @@
+nextflow.preview.types = true
+
 /**
  * Detect structural variant evidence from a BAM file using fgsv SvPileup.
  *
@@ -5,8 +7,6 @@
  * @param bam     Input BAM file
  * @return result Record of meta, the SvPileup BAM file (bam), and the breakpoint output file (txt)
  */
-nextflow.preview.types = true
-
 process SV_PILEUP {
     container "community.wave.seqera.io/library/fgsv:0.2.1--c84e2a909a90a8c9"
 

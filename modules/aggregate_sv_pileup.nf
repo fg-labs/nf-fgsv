@@ -1,3 +1,5 @@
+nextflow.preview.types = true
+
 /**
  * Aggregate and merge pileups that are likely to support the same breakpoint
  * using fgsv AggregateSvPileup.
@@ -7,8 +9,6 @@
  * @param txt         SvPileup breakpoint output file
  * @return aggregated Record of meta and the aggregated SvPileup output file (txt)
  */
-nextflow.preview.types = true
-
 process AGGREGATE_SV_PILEUP {
     container "community.wave.seqera.io/library/fgsv:0.2.1--c84e2a909a90a8c9"
 
