@@ -1,4 +1,10 @@
+## Updating Documentation
 
+The workflow documentation can be auto-generated using [nf-docs](https://github.com/ewels/nf-docs).
+
+```console
+pixi run nf-docs generate . --format markdown
+```
 
 ## Running Integration tests
 
