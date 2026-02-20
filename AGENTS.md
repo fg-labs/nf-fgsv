@@ -10,33 +10,15 @@ Run workflow tests from the project root directory with `pixi run wf-test` (defi
 Nextflow processes should have doc strings like:
 
 ```
-/** MODULE_NAME
-  *
-  * One sentence description.
-  *
-  * Inputs:
-  *   - input1: description
-  * Outputs:
-  *   - output1: description
-  */
-```
-
-When a process input or output is an anonymous record (the preferred form
-for I/O carrying both meta and one or more files), list each record field
-as a nested bullet so the field structure is visible at a glance:
-
-```nextflow
-/** MODULE_NAME
-  *
-  * One sentence description.
-  *
-  * Inputs:
-  *   - - meta: map containing sample information (must include 'id')
-  *     - bam:  description of the BAM input
-  * Outputs:
-  *   - - meta: map containing sample information (passthrough)
-  *     - txt:  description of the TXT output
-  */
+/**
+ * Align reads to a reference genome using BWA MEM.
+ *
+ * Handles both single-end and paired-end reads automatically.
+ *
+ * @param reads  Tuple of sample ID and FASTQ files
+ * @param index  BWA index files
+ * @return       Tuple of sample ID and aligned BAM file
+ */
 ```
 
 Nextflow files can be lint with `pixi run nextflow lint /path/to/file`
