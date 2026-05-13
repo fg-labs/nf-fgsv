@@ -21,18 +21,21 @@ Nextflow processes should have doc strings like:
   */
 ```
 
-Input and output tuples should be formatted in doc strings as
+When a process input or output is an anonymous record (the preferred form
+for I/O carrying both meta and one or more files), list each record field
+as a nested bullet so the field structure is visible at a glance:
+
 ```
 /** MODULE_NAME
   *
   * One sentence description.
   *
   * Inputs:
-  *   - - input_tuple_element_0: description
-  *     - input_tuple_element_1: description
+  *   - - meta: map containing sample information (must include 'id')
+  *     - bam:  description of the BAM input
   * Outputs:
-  *   - - output_tuple_element_0: description
-  *     - output_tuple_element_1: description
+  *   - - meta: map containing sample information (passthrough)
+  *     - txt:  description of the TXT output
   */
 ```
 
