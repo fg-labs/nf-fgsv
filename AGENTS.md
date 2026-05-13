@@ -25,7 +25,7 @@ When a process input or output is an anonymous record (the preferred form
 for I/O carrying both meta and one or more files), list each record field
 as a nested bullet so the field structure is visible at a glance:
 
-```
+```nextflow
 /** MODULE_NAME
   *
   * One sentence description.

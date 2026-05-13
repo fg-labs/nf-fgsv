@@ -38,5 +38,5 @@ wf-test = "pytest --git-aware --nf_profile 'docker' tests/integration/"
 # Make it easier to run the Nextflow workflow
 nf-workflow = "nextflow run main.nf"
 # Lint every Nextflow source file in the project
-lint = "nextflow lint main.nf modules/coordinate_sort.nf modules/sv_pileup.nf modules/aggregate_sv_pileup.nf modules/aggregate_sv_pileup_to_bedpe.nf"
+lint = "nextflow lint main.nf modules/*.nf"
 
