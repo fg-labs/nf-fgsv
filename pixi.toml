@@ -20,7 +20,7 @@ PATH = "${PIXI_PROJECT_ROOT}/.pixi/envs/${PIXI_ENVIRONMENT_NAME}/lib/jvm/bin:$PA
 [feature.nextflow.dependencies]
 # This feature provides Nextflow, for executing the pipeline.
 openjdk = "~=21.0"
-nextflow = ">=25.10.0"
+nextflow = ">=26.04.0"
 
 [feature.pytest_workflow.dependencies]
 # This feature supports integration testing of the Nextflow workflow.
