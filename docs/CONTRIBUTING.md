@@ -69,6 +69,6 @@ A few features added in Nextflow 26.04 that are useful when working in this repo
 - **Linting** — run `pixi run lint` to lint every `.nf` file in the project
   (the four modules + `main.nf`).
 
-- **Apple container runtime on macOS** — pass `-profile appleContainer` to
+- **Apple container runtime on macOS** — pass `-profile appleSilicon` to
   run containers via Apple's native container runtime instead of Docker
   Desktop (requires macOS with the runtime installed).
