@@ -1,4 +1,6 @@
-#!/usr/bin/env nextflow 
+#!/usr/bin/env nextflow
+nextflow.enable.types = true
+
 include {
     validateParameters;
     paramsHelp;
@@ -18,24 +20,17 @@ params {
 
 workflow {
     main:
-    // Validate input parameters
     validateParameters()
-
-    // Print summary of supplied parameters
     log.info paramsSummaryLog(workflow)
 
-    ch_input_bams = channel.fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
+    ch_samples = channel
+        .fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
+        .map { meta, bam -> record(meta: meta, bam: bam) }
 
-    COORDINATE_SORT(ch_input_bams)
-
-    SV_PILEUP(COORDINATE_SORT.out.bam)
-
-    ch_aggregate_input = SV_PILEUP.out.bam
-        .join(SV_PILEUP.out.txt)
-
-    AGGREGATE_SV_PILEUP(ch_aggregate_input)
-
-    AGGREGATE_SV_PILEUP_TO_BEDPE(AGGREGATE_SV_PILEUP.out.txt)
+    COORDINATE_SORT(ch_samples)
+    SV_PILEUP(COORDINATE_SORT.out)
+    AGGREGATE_SV_PILEUP(SV_PILEUP.out)
+    AGGREGATE_SV_PILEUP_TO_BEDPE(AGGREGATE_SV_PILEUP.out)
 
     publish:
     sample_outputs = channel.topic('sample_outputs')
@@ -43,7 +38,7 @@ workflow {
 
 output {
     sample_outputs {
-        path {meta, _file -> "${meta.id}/"}
+        path { s -> "${s.meta.id}/" }
         mode 'link'
     }
 }

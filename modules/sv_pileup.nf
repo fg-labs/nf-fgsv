@@ -1,29 +1,36 @@
+nextflow.enable.types = true
+
 /** SV_PILEUP
   *
   * Detect structural variant evidence from a BAM file using fgsv SvPileup.
   *
   * Inputs:
   *   - - meta: map containing sample information (must include 'id')
-  *     - bam: BAM file
+  *     - bam:  coordinate-sorted BAM file
   * Outputs:
-  *   - - meta: map containing sample information
-  *     - txt: SvPileup breakpoint output file ('*_svpileup.txt')
+  *   - - meta: map containing sample information (passthrough)
+  *     - bam:  SvPileup supporting BAM ('*_svpileup.bam')
+  *     - txt:  SvPileup breakpoint TXT ('*_svpileup.txt')
+  *
+  * Combining the BAM and TXT in one record lets AGGREGATE_SV_PILEUP consume a
+  * single channel without an explicit .join().
   */
-nextflow.preview.types = true
-
 process SV_PILEUP {
     container "community.wave.seqera.io/library/fgsv:0.2.1--c84e2a909a90a8c9"
 
     input:
-    (meta, bam): Tuple<?, Path>
+    record(meta: Map, bam: Path)
 
     output:
-    txt = tuple(meta, file("*_svpileup.txt"))
-    bam = tuple(meta, file("*_svpileup.bam"))
+    result = record(
+        meta: meta,
+        bam:  file("*_svpileup.bam"),
+        txt:  file("*_svpileup.txt"),
+    )
 
     topic:
-    tuple(meta, file("*_svpileup.txt")) >> 'sample_outputs'
-    tuple(meta, file("*_svpileup.bam")) >> 'sample_outputs'
+    record(meta: meta, path: file("*_svpileup.txt")) >> 'sample_outputs'
+    record(meta: meta, path: file("*_svpileup.bam")) >> 'sample_outputs'
 
     script:
     def prefix = "${meta.id}"
