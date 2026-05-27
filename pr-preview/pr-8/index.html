@@ -1545,7 +1545,12 @@ It must be specified on the command line or in a <code>nextflow.config</code> fi
               
             </div>
             
-            <div class="prose mb-2 text-slate-600"><p>Path to tab-separated file containing information about the samples in the experiment.</p></div>
+            <div class="prose mb-2 text-slate-600"><p>Path to a tab-separated values (TSV) sample sheet describing the samples to analyze. The file must have a header row with the following required columns:</p>
+<ul>
+<li><code>sample</code>: a unique sample identifier containing no whitespace; used as the <code>meta.id</code> that names per-sample outputs.</li>
+<li><code>bam</code>: path to an existing BAM file for the sample (must end in <code>.bam</code>).</li>
+</ul>
+<p>See <code>schemas/input_schema.json</code> for the full validation rules.</p></div>
                
           </div>
            
@@ -1579,7 +1584,7 @@ It must be specified on the command line or in a <code>nextflow.config</code> fi
               </span>
                
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/5e3715495fef89efd2b4cf04aaa2928447818211/main.nf#L21-L37"
+                href="https://github.com/fg-labs/nf-fgsv/blob/ee6a533e91f2c9757cc7f776b0e7156fdb574dc8/main.nf#L35-L51"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -1591,7 +1596,7 @@ It must be specified on the command line or in a <code>nextflow.config</code> fi
             </div>
             
             <div class="text-xs text-slate-400 mb-2">
-              Defined in <code>main.nf:21</code>
+              Defined in <code>main.nf:35</code>
             </div>
             
 
@@ -1602,6 +1607,19 @@ It must be specified on the command line or in a <code>nextflow.config</code> fi
             
 
             <!-- Code documentation (Groovydoc) - show if present and different from meta description -->
+             
+            <div class="prose mb-4 text-slate-600"><p>Detect structural-variant breakpoints from aligned reads using fgsv.
+The <code>--input</code> sample sheet provides one <code>sample</code> identifier and <code>bam</code> path per
+row (see the <code>--input</code> parameter for the full column specification). Every
+per-sample output — the sorted BAM, SvPileup BAM and text, aggregated
+breakpoints, and BEDPE — is published via the <code>sample_outputs</code> topic into a
+directory named after the sample's <code>meta.id</code>. For each sample the workflow runs:</p>
+<ol>
+<li><code>COORDINATE_SORT</code> — coordinate-sort the input BAM with samtools.</li>
+<li><code>SV_PILEUP</code> — gather read-level evidence for structural variants (fgsv SvPileup).</li>
+<li><code>AGGREGATE_SV_PILEUP</code> — merge pileups that likely support the same breakpoint.</li>
+<li><code>AGGREGATE_SV_PILEUP_TO_BEDPE</code> — convert the aggregated breakpoints to BEDPE.</li>
+</ol></div>
             
 
             <!-- Components section (from meta.yml - modules/subworkflows used) -->
@@ -1639,7 +1657,7 @@ It must be specified on the command line or in a <code>nextflow.config</code> fi
               <span class="font-bold text-primary-dark">AGGREGATE_SV_PILEUP</span>
               
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/5e3715495fef89efd2b4cf04aaa2928447818211/modules/aggregate_sv_pileup.nf#L12-L36"
+                href="https://github.com/fg-labs/nf-fgsv/blob/ee6a533e91f2c9757cc7f776b0e7156fdb574dc8/modules/aggregate_sv_pileup.nf#L12-L36"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -1768,7 +1786,7 @@ using fgsv AggregateSvPileup.</p></div>
               <span class="font-bold text-primary-dark">AGGREGATE_SV_PILEUP_TO_BEDPE</span>
               
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/5e3715495fef89efd2b4cf04aaa2928447818211/modules/aggregate_sv_pileup_to_bedpe.nf#L11-L34"
+                href="https://github.com/fg-labs/nf-fgsv/blob/ee6a533e91f2c9757cc7f776b0e7156fdb574dc8/modules/aggregate_sv_pileup_to_bedpe.nf#L11-L34"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -1879,7 +1897,7 @@ AggregateSvPileupToBedPE.</p></div>
               <span class="font-bold text-primary-dark">COORDINATE_SORT</span>
               
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/5e3715495fef89efd2b4cf04aaa2928447818211/modules/coordinate_sort.nf#L10-L31"
+                href="https://github.com/fg-labs/nf-fgsv/blob/ee6a533e91f2c9757cc7f776b0e7156fdb574dc8/modules/coordinate_sort.nf#L10-L31"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -1989,7 +2007,7 @@ AggregateSvPileupToBedPE.</p></div>
               <span class="font-bold text-primary-dark">SV_PILEUP</span>
               
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/5e3715495fef89efd2b4cf04aaa2928447818211/modules/sv_pileup.nf#L10-L35"
+                href="https://github.com/fg-labs/nf-fgsv/blob/ee6a533e91f2c9757cc7f776b0e7156fdb574dc8/modules/sv_pileup.nf#L10-L35"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -2165,7 +2183,7 @@ AggregateSvPileupToBedPE.</p></div>
                 >nf-docs</a
               >
               <span class="nf-docs-version">v0.3.0</span>
-              <span>on 2026-05-27 18:35:52 UTC</span>
+              <span>on 2026-05-27 18:48:18 UTC</span>
             </div>
           </div>
         </footer>
@@ -2549,7 +2567,7 @@ AggregateSvPileupToBedPE.</p></div>
           
           {
             name: "(entry)",
-            docstring: "",
+            docstring: "Detect structural-variant breakpoints from aligned reads using fgsv.\nThe `--input` sample sheet provides one `sample` identifier and `bam` path per\nrow (see the `--input` parameter for the full column specification). Every\nper-sample output \u2014 the sorted BAM, SvPileup BAM and text, aggregated\nbreakpoints, and BEDPE \u2014 is published via the `sample_outputs` topic into a\ndirectory named after the sample\u0027s `meta.id`. For each sample the workflow runs:\n1. `COORDINATE_SORT` \u2014 coordinate-sort the input BAM with samtools.\n2. `SV_PILEUP` \u2014 gather read-level evidence for structural variants (fgsv SvPileup).\n3. `AGGREGATE_SV_PILEUP` \u2014 merge pileups that likely support the same breakpoint.\n4. `AGGREGATE_SV_PILEUP_TO_BEDPE` \u2014 convert the aggregated breakpoints to BEDPE.",
             file: "main.nf",
             id: "workflow-entry",
             section: "workflows"
@@ -2598,7 +2616,7 @@ AggregateSvPileupToBedPE.</p></div>
           
           {
             name: "input",
-            description: "Path to tab-separated file containing information about the samples in the experiment.",
+            description: "Path to a tab-separated values (TSV) sample sheet describing the samples to analyze. The file must have a header row with the following required columns:\n\n- `sample`: a unique sample identifier containing no whitespace; used as the `meta.id` that names per-sample outputs.\n- `bam`: path to an existing BAM file for the sample (must end in `.bam`).\n\nSee `schemas/input_schema.json` for the full validation rules.",
             group: "Main workflow parameters",
             id: "param-input",
             section: "inputs"
