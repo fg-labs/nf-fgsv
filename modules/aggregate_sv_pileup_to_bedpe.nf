@@ -1,4 +1,4 @@
-nextflow.preview.types = true
+nextflow.enable.types = true
 
 /**
  * Convert aggregated SvPileup output to BEDPE format using fgsv

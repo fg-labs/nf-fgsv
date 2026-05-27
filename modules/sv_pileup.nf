@@ -1,4 +1,4 @@
-nextflow.preview.types = true
+nextflow.enable.types = true
 
 /**
  * Detect structural variant evidence from a BAM file using fgsv SvPileup.

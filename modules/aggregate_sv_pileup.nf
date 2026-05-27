@@ -1,4 +1,4 @@
-nextflow.preview.types = true
+nextflow.enable.types = true
 
 /**
  * Aggregate and merge pileups that are likely to support the same breakpoint

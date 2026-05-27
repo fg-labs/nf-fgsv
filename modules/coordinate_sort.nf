@@ -1,4 +1,4 @@
-nextflow.preview.types = true
+nextflow.enable.types = true
 
 /**
  * Sort a BAM file by genomic coordinates using samtools sort.
