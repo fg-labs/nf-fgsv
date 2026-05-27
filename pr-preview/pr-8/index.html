@@ -1579,7 +1579,7 @@ It must be specified on the command line or in a <code>nextflow.config</code> fi
               </span>
                
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/3599ff48e9582803a8d4b5687fe28bdd83c882ef/main.nf#L21-L37"
+                href="https://github.com/fg-labs/nf-fgsv/blob/3b5fcaf8bd924fd151e2a0be82cb4ff857518d90/main.nf#L21-L37"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -1639,7 +1639,7 @@ It must be specified on the command line or in a <code>nextflow.config</code> fi
               <span class="font-bold text-primary-dark">AGGREGATE_SV_PILEUP</span>
               
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/3599ff48e9582803a8d4b5687fe28bdd83c882ef/modules/aggregate_sv_pileup.nf#L12-L36"
+                href="https://github.com/fg-labs/nf-fgsv/blob/3b5fcaf8bd924fd151e2a0be82cb4ff857518d90/modules/aggregate_sv_pileup.nf#L12-L36"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -1672,6 +1672,82 @@ using fgsv AggregateSvPileup.</p></div>
 
             <!-- Inputs section - combine LSP inputs with meta.yml descriptions -->
             
+            <h3 class="text-lg font-semibold mt-4 mb-2">Inputs</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse mb-4">
+                <thead>
+                  <tr>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Name
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Type
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >meta</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >val</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Map containing sample information (must include 'id')</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >bam</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Input BAM file</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >txt</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>SvPileup breakpoint output file</p></div>
+                      
+                    </td>
+                  </tr>
+                   
+                </tbody>
+              </table>
+            </div>
+            
 
             <!-- Outputs section - combine LSP outputs with meta.yml descriptions -->
              
@@ -1692,7 +1768,7 @@ using fgsv AggregateSvPileup.</p></div>
               <span class="font-bold text-primary-dark">AGGREGATE_SV_PILEUP_TO_BEDPE</span>
               
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/3599ff48e9582803a8d4b5687fe28bdd83c882ef/modules/aggregate_sv_pileup_to_bedpe.nf#L11-L34"
+                href="https://github.com/fg-labs/nf-fgsv/blob/3b5fcaf8bd924fd151e2a0be82cb4ff857518d90/modules/aggregate_sv_pileup_to_bedpe.nf#L11-L34"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -1725,6 +1801,64 @@ AggregateSvPileupToBedPE.</p></div>
 
             <!-- Inputs section - combine LSP inputs with meta.yml descriptions -->
             
+            <h3 class="text-lg font-semibold mt-4 mb-2">Inputs</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse mb-4">
+                <thead>
+                  <tr>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Name
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Type
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >meta</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >val</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Map containing sample information (must include 'id')</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >txt</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Aggregated SvPileup output file</p></div>
+                      
+                    </td>
+                  </tr>
+                   
+                </tbody>
+              </table>
+            </div>
+            
 
             <!-- Outputs section - combine LSP outputs with meta.yml descriptions -->
              
@@ -1745,7 +1879,7 @@ AggregateSvPileupToBedPE.</p></div>
               <span class="font-bold text-primary-dark">COORDINATE_SORT</span>
               
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/3599ff48e9582803a8d4b5687fe28bdd83c882ef/modules/coordinate_sort.nf#L10-L31"
+                href="https://github.com/fg-labs/nf-fgsv/blob/3b5fcaf8bd924fd151e2a0be82cb4ff857518d90/modules/coordinate_sort.nf#L10-L31"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -1777,6 +1911,64 @@ AggregateSvPileupToBedPE.</p></div>
 
             <!-- Inputs section - combine LSP inputs with meta.yml descriptions -->
             
+            <h3 class="text-lg font-semibold mt-4 mb-2">Inputs</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse mb-4">
+                <thead>
+                  <tr>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Name
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Type
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >meta</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >val</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Map containing sample information (must include 'id')</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >bam</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Input BAM file to be sorted</p></div>
+                      
+                    </td>
+                  </tr>
+                   
+                </tbody>
+              </table>
+            </div>
+            
 
             <!-- Outputs section - combine LSP outputs with meta.yml descriptions -->
              
@@ -1797,7 +1989,7 @@ AggregateSvPileupToBedPE.</p></div>
               <span class="font-bold text-primary-dark">SV_PILEUP</span>
               
               <a
-                href="https://github.com/fg-labs/nf-fgsv/blob/3599ff48e9582803a8d4b5687fe28bdd83c882ef/modules/sv_pileup.nf#L10-L35"
+                href="https://github.com/fg-labs/nf-fgsv/blob/3b5fcaf8bd924fd151e2a0be82cb4ff857518d90/modules/sv_pileup.nf#L10-L35"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="ml-2 text-slate-400 hover:text-primary no-underline"
@@ -1828,6 +2020,64 @@ AggregateSvPileupToBedPE.</p></div>
             
 
             <!-- Inputs section - combine LSP inputs with meta.yml descriptions -->
+            
+            <h3 class="text-lg font-semibold mt-4 mb-2">Inputs</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse mb-4">
+                <thead>
+                  <tr>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Name
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Type
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >meta</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >val</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Map containing sample information (must include 'id')</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >bam</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Input BAM file</p></div>
+                      
+                    </td>
+                  </tr>
+                   
+                </tbody>
+              </table>
+            </div>
             
 
             <!-- Outputs section - combine LSP outputs with meta.yml descriptions -->
@@ -1915,7 +2165,7 @@ AggregateSvPileupToBedPE.</p></div>
                 >nf-docs</a
               >
               <span class="nf-docs-version">v0.3.0</span>
-              <span>on 2026-05-27 18:24:38 UTC</span>
+              <span>on 2026-05-27 18:30:01 UTC</span>
             </div>
           </div>
         </footer>
