@@ -6,6 +6,9 @@
 build/
 dist/
 
+# nf-docs HTML build (generated and published by CI, see .github/workflows/docs.yml)
+_site/
+
 # MyPy Cache directory
 .mypy_cache
 

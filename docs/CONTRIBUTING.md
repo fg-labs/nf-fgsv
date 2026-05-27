@@ -1,10 +1,19 @@
-## Updating Documentation
+## Documentation
 
-The workflow documentation can be auto-generated using [nf-docs](https://github.com/ewels/nf-docs).
+The workflow documentation is generated from the pipeline source with
+[nf-docs](https://github.com/ewels/nf-docs) and published to GitHub Pages by the
+[`Docs` workflow](../.github/workflows/docs.yml); it is **not** checked into the
+repository. Pushes to `main` rebuild and redeploy the live site, and pull
+requests that touch Nextflow files (or `nextflow.config`, `nextflow_schema.json`,
+`README.md`) get an isolated preview with a link posted as a PR comment.
+
+To preview the site locally before pushing:
 
 ```console
-pixi run nf-docs generate . --format markdown
+pixi run docs-html
 ```
+
+Then open `_site/index.html` in a browser.
 
 ## Running Integration tests
 

@@ -43,4 +43,6 @@ wf-test = "pytest --git-aware --nf_profile 'docker' tests/integration/"
 nf-workflow = "nextflow run main.nf"
 # Lint every Nextflow source file in the project
 lint = "nextflow lint main.nf modules/*.nf"
+# Build the interactive HTML docs into _site/ (preview locally before pushing)
+docs-html = "nf-docs generate . --format html --output _site"
 
