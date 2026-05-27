@@ -1,0 +1,85 @@
+name: Docs
+
+# Build the interactive HTML documentation with nf-docs and publish it to the
+# `gh-pages` branch.
+#
+# Pushes to `main` update the live site; pull requests get an
+# isolated preview under `pr-preview/pr-<N>/` with a link posted to the PR.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.nf'
+      - 'nextflow.config'
+      - 'nextflow_schema.json'
+      - 'README.md'
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    paths:
+      - '**.nf'
+      - 'nextflow.config'
+      - 'nextflow_schema.json'
+      - 'README.md'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # push the built site to the gh-pages branch
+    concurrency:
+      group: docs-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: prefix-dev/setup-pixi@8ca4608ef7f4daeb54f5205b20d0b7cb42f11143 # v0.8.14
+        with:
+          cache: true
+      - name: Build HTML docs
+        run: pixi run docs-html
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
+        with:
+          folder: _site
+          branch: gh-pages
+          # Preserve open PR previews when the live site is redeployed.
+          clean-exclude: pr-preview/
+
+  preview:
+    # Previews require write access to the gh-pages branch, which GitHub does
+    # not grant to pull requests from forks; gate to same-repo PRs so fork PRs
+    # don't trigger a guaranteed-to-fail deploy.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # push the preview to the gh-pages branch
+      pull-requests: write  # post the preview link as a PR comment
+    concurrency:
+      group: docs-preview-${{ github.event.number }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        if: github.event.action != 'closed'
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+      - uses: prefix-dev/setup-pixi@8ca4608ef7f4daeb54f5205b20d0b7cb42f11143 # v0.8.14
+        if: github.event.action != 'closed'
+        with:
+          cache: true
+      - name: Build HTML docs
+        if: github.event.action != 'closed'
+        run: pixi run docs-html
+      # Deploys the build on open/sync/reopen and tears it down on close,
+      # commenting the preview URL on the PR.
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1.8.1
+        with:
+          source-dir: _site

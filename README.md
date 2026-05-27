@@ -1,6 +1,6 @@
 # nf-fgsv
 
-[![Workflow CI](https://github.com/fg-labs/nf-fgsv/actions/workflows/nextflow_checks.yml/badge.svg?branch=main)](https://github.com/fg-labs/nf-fgsv/actions/workflows/nextflow_checks.yml?query=branch%3Amain)  [![Nextflow Version](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A526.04.0-23aa62.svg)](https://www.nextflow.io/)  [![Pixi](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json&style=flat-square)](https://pixi.sh/)
+[![Workflow CI](https://github.com/fg-labs/nf-fgsv/actions/workflows/nextflow_checks.yml/badge.svg?branch=main)](https://github.com/fg-labs/nf-fgsv/actions/workflows/nextflow_checks.yml?query=branch%3Amain)  [![Documentation](https://img.shields.io/badge/docs-fg--labs.github.io-23aa62.svg)](https://fg-labs.github.io/nf-fgsv/)  [![Nextflow Version](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A526.04.0-23aa62.svg)](https://www.nextflow.io/)  [![Pixi](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json&style=flat-square)](https://pixi.sh/)
 
 > [!NOTE]  
 > This repository is primarily for testing the latest Nextflow features and the workflow is relatively simple.
@@ -10,9 +10,9 @@ This is a Nextflow workflow for running [fgsv](https://github.com/fulcrumgenomic
 <p>
 <a href="https://fulcrumgenomics.com">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/logos/fulcrumgenomics-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset=".github/logos/fulcrumgenomics-light.svg">
-  <img alt="Fulcrum Genomics" src=".github/logos/fulcrumgenomics-light.svg" height="100">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-light.svg">
+  <img alt="Fulcrum Genomics" src="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-light.svg" height="100" width="25%">
 </picture>
 </a>
 </p>

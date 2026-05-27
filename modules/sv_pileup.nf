@@ -1,20 +1,12 @@
 nextflow.enable.types = true
 
-/** SV_PILEUP
-  *
-  * Detect structural variant evidence from a BAM file using fgsv SvPileup.
-  *
-  * Inputs:
-  *   - - meta: map containing sample information (must include 'id')
-  *     - bam:  coordinate-sorted BAM file
-  * Outputs:
-  *   - - meta: map containing sample information (passthrough)
-  *     - bam:  SvPileup supporting BAM ('*_svpileup.bam')
-  *     - txt:  SvPileup breakpoint TXT ('*_svpileup.txt')
-  *
-  * Combining the BAM and TXT in one record lets AGGREGATE_SV_PILEUP consume a
-  * single channel without an explicit .join().
-  */
+/**
+ * Detect structural variant evidence from a BAM file using fgsv SvPileup.
+ *
+ * @param meta    Map containing sample information (must include 'id')
+ * @param bam     Input BAM file
+ * @return result Record of meta, the SvPileup BAM file (bam), and the breakpoint output file (txt)
+ */
 process SV_PILEUP {
     container "community.wave.seqera.io/library/fgsv:0.2.1--c84e2a909a90a8c9"
 

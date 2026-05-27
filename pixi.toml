@@ -29,8 +29,12 @@ python = ">=3.12.10,<3.13"
 pytest = ">=8.3.5,<9"
 pytest-workflow = ">=2.1.0,<3"
 
+[feature.dev.dependencies]
+# nf-docs (from bioconda) auto-generates the workflow documentation.
+nf-docs = ">=0.3.0"
+
 [environments]
-default = { features = ["nextflow", "pytest_workflow"] }
+default = { features = ["nextflow", "pytest_workflow", "dev"] }
 
 [tasks]
 # Run integration tests with the appropriate Nextflow profiles
@@ -39,4 +43,6 @@ wf-test = "pytest --git-aware --nf_profile 'docker' tests/integration/"
 nf-workflow = "nextflow run main.nf"
 # Lint every Nextflow source file in the project
 lint = "nextflow lint main.nf modules/*.nf"
+# Build the interactive HTML docs into _site/ (preview locally before pushing)
+docs-html = "nf-docs generate . --format html --output _site"
 
