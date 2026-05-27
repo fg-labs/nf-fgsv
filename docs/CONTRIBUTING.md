@@ -47,3 +47,28 @@ For inputs that require validation (such as the sample sheet), add a [schema def
 
 Integration tests are defined in YAML files in the [tests](tests/) folder.
 See the [pytest-workflow docs](https://pytest-workflow.readthedocs.io/en/stable/) for details on how to write tests.
+
+## Nextflow 26.04 conveniences
+
+A few features added in Nextflow 26.04 that are useful when working in this repo:
+
+- **Workflow output summary** — when the workflow has an `output { … }` block
+  (this repo does), Nextflow now prints a summary of published outputs at end
+  of run. Combine with `-output-format json` to get the same summary as
+  machine-readable JSON, e.g.:
+  ```console
+  nextflow run main.nf -profile docker -output-format json
+  ```
+
+- **Agent logging mode** — set `NXF_AGENT_MODE=1` to switch to minimal
+  structured logging optimized for use inside an LLM agent loop:
+  ```console
+  NXF_AGENT_MODE=1 pixi run nf-workflow --input my_inputs.tsv
+  ```
+
+- **Linting** — run `pixi run lint` to lint every `.nf` file in the project
+  (the four modules + `main.nf`).
+
+- **Apple container runtime on macOS** — pass `-profile appleSilicon` to
+  run containers via Apple's native container runtime instead of Docker
+  Desktop (requires macOS with the runtime installed).
