@@ -1,8 +1,9 @@
 name: Docs
 
 # Build the interactive HTML documentation with nf-docs and publish it to the
-# `gh-pages` branch (configure Settings -> Pages -> "Deploy from a branch" ->
-# gh-pages / root). Pushes to `main` update the live site; pull requests get an
+# `gh-pages` branch.
+#
+# Pushes to `main` update the live site; pull requests get an
 # isolated preview under `pr-preview/pr-<N>/` with a link posted to the PR.
 
 on:
@@ -21,7 +22,6 @@ on:
       - 'nextflow_schema.json'
       - 'README.md'
 
-# Minimal default; each job widens only what it needs (see job-level permissions).
 permissions:
   contents: read
 
