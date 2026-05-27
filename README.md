@@ -12,7 +12,7 @@ This is a Nextflow workflow for running [fgsv](https://github.com/fulcrumgenomic
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-light.svg">
-  <img alt="Fulcrum Genomics" src="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-light.svg" width="193" height="60">
+  <img alt="Fulcrum Genomics" src="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-light.svg" height="100">
 </picture>
 </a>
 </p>
