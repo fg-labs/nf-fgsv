@@ -1,0 +1,3134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nf-fgsv workflow parameters</title>
+    <script>
+      // Apply theme before page renders to avoid flash
+      (function () {
+        const STORAGE_KEY = "nf-docs-theme";
+        const stored = localStorage.getItem(STORAGE_KEY);
+        let theme = stored;
+        if (!theme) {
+          // Auto-detect from OS preference
+          theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+    <style>
+      /* Tailwind CSS will be injected here */
+
+      /* Prose styles for rendered markdown content */
+      .prose p {
+        margin-bottom: 1em;
+      }
+      .prose p:last-child {
+        margin-bottom: 0;
+      }
+      .prose ul,
+      .prose ol {
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+        padding-left: 1.5em;
+      }
+      .prose ul {
+        list-style-type: disc;
+      }
+      .prose ol {
+        list-style-type: decimal;
+      }
+      .prose li {
+        margin-bottom: 0.25em;
+      }
+      .prose li:last-child {
+        margin-bottom: 0;
+      }
+      .prose code {
+        background-color: rgb(241 245 249); /* slate-100 */
+        padding: 0.125rem 0.375rem;
+        border-radius: 0.25rem;
+        font-family: ui-monospace, monospace;
+        font-size: 0.875em;
+      }
+      .prose pre {
+        background-color: rgb(30 41 59); /* slate-800 */
+        color: rgb(226 232 240); /* slate-200 */
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        margin: 1em 0;
+      }
+      .prose pre code {
+        background: none;
+        padding: 0;
+        color: inherit;
+      }
+      .prose a {
+        color: #0dc09d;
+        text-decoration: underline;
+      }
+      .prose a:hover {
+        color: #0a9a7d;
+      }
+      .prose a.paragraph-link {
+        text-decoration: none;
+        color: rgb(148 163 184); /* slate-400 - match non-prose paragraph-link */
+        opacity: 0.7;
+      }
+      .prose .heading-anchor:hover a.paragraph-link {
+        opacity: 1;
+        color: #0dc09d; /* primary */
+      }
+      .prose blockquote {
+        border-left: 4px solid rgb(203 213 225); /* slate-300 */
+        padding-left: 1em;
+        margin: 1em 0;
+        color: rgb(100 116 139); /* slate-500 */
+        font-style: italic;
+      }
+      .prose h1,
+      .prose h2,
+      .prose h3,
+      .prose h4,
+      .prose h5,
+      .prose h6 {
+        font-weight: 600;
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+      }
+      .prose h1 {
+        font-size: 1.5em;
+      }
+      .prose h2 {
+        font-size: 1.25em;
+      }
+      .prose h3 {
+        font-size: 1.125em;
+      }
+      .prose table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1em 0;
+      }
+      .prose th,
+      .prose td {
+        border: 1px solid rgb(226 232 240); /* slate-200 */
+        padding: 0.5rem;
+        text-align: left;
+      }
+      .prose th {
+        background-color: rgb(241 245 249); /* slate-100 */
+        font-weight: 600;
+      }
+      /* Search results highlighting */
+      .search-highlight {
+        background-color: rgb(254 249 195); /* yellow-100 */
+        padding: 0.125rem 0.25rem;
+        border-radius: 0.25rem;
+      }
+      /* Scroll offset for fixed top nav */
+      [id] {
+        scroll-margin-top: 4.5rem; /* 3.5rem nav + 1rem padding */
+      }
+
+      /* Prevent horizontal overflow on main content */
+      main {
+        overflow-x: hidden;
+      }
+
+      /* Paragraph anchor links */
+      .paragraph-link {
+        margin-left: 0.5rem;
+        color: rgb(148 163 184); /* slate-400 */
+        opacity: 0.7;
+        transition:
+          opacity 0.2s,
+          color 0.2s;
+        text-decoration: none;
+      }
+      .heading-anchor:hover .paragraph-link {
+        opacity: 1;
+        color: #0dc09d; /* primary */
+      }
+
+      /* Dark mode paragraph links */
+      html.dark .paragraph-link {
+        color: rgb(100 116 139); /* slate-500 */
+        opacity: 0.8;
+      }
+      html.dark .heading-anchor:hover .paragraph-link {
+        opacity: 1;
+        color: #0dc09d; /* primary */
+      }
+
+      /* ==================== Dark Mode Styles ==================== */
+
+      /* Theme toggle button */
+      .theme-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .theme-toggle:hover {
+        background-color: rgb(241 245 249); /* slate-100 */
+      }
+      .theme-toggle svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: rgb(100 116 139); /* slate-500 */
+      }
+      .theme-toggle:hover svg {
+        color: rgb(71 85 105); /* slate-600 */
+      }
+      /* Hide icons based on current theme */
+      .theme-toggle .icon-sun {
+        display: none;
+      }
+      .theme-toggle .icon-moon {
+        display: block;
+      }
+
+      /* Dark mode base styles */
+      html.dark body {
+        background-color: rgb(15 23 42); /* slate-900 */
+        color: rgb(226 232 240); /* slate-200 */
+      }
+      html.dark .theme-toggle:hover {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark .theme-toggle svg {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark .theme-toggle:hover svg {
+        color: rgb(226 232 240); /* slate-200 */
+      }
+      html.dark .theme-toggle .icon-sun {
+        display: block;
+      }
+      html.dark .theme-toggle .icon-moon {
+        display: none;
+      }
+
+      /* Dark mode - Header */
+      html.dark header {
+        background-color: rgb(30 41 59); /* slate-800 */
+        border-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark header .text-slate-500 {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark header .text-slate-600 {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+
+      /* Dark mode - Search input */
+      html.dark #search-input {
+        background-color: rgb(51 65 85); /* slate-700 */
+        border-color: rgb(71 85 105); /* slate-600 */
+        color: rgb(226 232 240); /* slate-200 */
+      }
+      html.dark #search-input::placeholder {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark #search-input:focus {
+        border-color: transparent;
+      }
+      html.dark #search-clear {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark #search-clear:hover {
+        color: rgb(226 232 240); /* slate-200 */
+      }
+
+      /* Dark mode - Left sidebar */
+      html.dark #left-nav {
+        background-color: rgb(30 41 59); /* slate-800 */
+        border-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark .nav-link {
+        color: rgb(203 213 225); /* slate-300 */
+      }
+      html.dark .nav-link:hover:not(.bg-primary) {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark .nav-link.text-slate-800 {
+        color: rgb(203 213 225); /* slate-300 */
+      }
+      /* Active nav link in dark mode - ensure bright white text */
+      html.dark .nav-link.bg-primary {
+        color: rgb(255 255 255); /* white */
+      }
+
+      /* Light mode - don't apply hover to active nav link */
+      .nav-link.bg-primary:hover {
+        background-color: #0dc09d; /* keep primary background on hover */
+      }
+
+      /* Dark mode - Mobile menu */
+      html.dark #mobile-menu {
+        background-color: rgb(30 41 59); /* slate-800 */
+      }
+      html.dark #mobile-menu .border-slate-200 {
+        border-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark .mobile-nav-link {
+        color: rgb(203 213 225); /* slate-300 */
+      }
+      html.dark .mobile-nav-link:hover {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark #mobile-toc-link {
+        color: rgb(203 213 225); /* slate-300 */
+      }
+      html.dark #mobile-toc-link:hover {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark #mobile-toc-back {
+        color: rgb(203 213 225); /* slate-300 */
+      }
+      html.dark #mobile-toc-back:hover {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark #mobile-toc-nav .sticky {
+        background-color: rgb(30 41 59); /* slate-800 */
+        border-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark .mobile-toc-link {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark .mobile-toc-link:hover {
+        background-color: rgb(51 65 85); /* slate-700 */
+        color: rgb(226 232 240); /* slate-200 */
+      }
+      html.dark .mobile-toc-group-header {
+        color: rgb(203 213 225); /* slate-300 */
+      }
+      html.dark #mobile-search-input {
+        background-color: rgb(51 65 85); /* slate-700 */
+        border-color: rgb(71 85 105); /* slate-600 */
+        color: rgb(226 232 240); /* slate-200 */
+      }
+      html.dark #mobile-search-input::placeholder {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+
+      /* Dark mode - Right sidebar */
+      html.dark #right-nav {
+        background-color: rgb(30 41 59); /* slate-800 */
+        border-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark #right-nav .text-slate-500 {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark .toc-group-header {
+        color: rgb(203 213 225); /* slate-300 */
+      }
+      html.dark .toc-link {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark .toc-link:hover {
+        background-color: rgb(51 65 85); /* slate-700 */
+        color: rgb(226 232 240); /* slate-200 */
+      }
+
+      /* Dark mode - Main content */
+      html.dark main {
+        background-color: rgb(15 23 42); /* slate-900 */
+      }
+      html.dark .text-slate-800 {
+        color: rgb(226 232 240); /* slate-200 */
+      }
+      html.dark .text-slate-600 {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark .text-slate-500 {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark .text-slate-400 {
+        color: rgb(100 116 139); /* slate-500 */
+      }
+      html.dark .text-slate-300 {
+        color: rgb(71 85 105); /* slate-600 */
+      }
+      html.dark .border-slate-200 {
+        border-color: rgb(51 65 85); /* slate-700 */
+      }
+
+      /* Dark mode - Cards and panels */
+      html.dark .bg-white {
+        background-color: rgb(30 41 59); /* slate-800 */
+      }
+      html.dark .bg-slate-50 {
+        background-color: rgb(15 23 42); /* slate-900 */
+      }
+      html.dark .bg-slate-100 {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark .hover\:bg-slate-50:hover {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark .hover\:bg-slate-100:hover {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+
+      /* Dark mode - Keyword badges */
+      html.dark .bg-slate-200 {
+        background-color: rgb(51 65 85); /* slate-700 */
+        color: rgb(203 213 225); /* slate-300 */
+      }
+
+      /* nf-core module link */
+      .nfcore-link {
+        opacity: 0.3;
+        transition: opacity 0.2s;
+        vertical-align: middle;
+      }
+      .nfcore-link:hover,
+      .heading-anchor:hover .nfcore-link {
+        opacity: 1;
+      }
+      .nfcore-link svg {
+        width: 1em;
+        height: 1em;
+        display: inline-block;
+        vertical-align: -0.125em;
+      }
+
+      /* Dark mode - Tables */
+      html.dark th {
+        background-color: rgb(51 65 85); /* slate-700 */
+        color: rgb(226 232 240); /* slate-200 */
+      }
+      html.dark td {
+        border-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark tr:hover {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+
+      /* Dark mode - Code blocks */
+      html.dark .prose code {
+        background-color: rgb(51 65 85); /* slate-700 */
+        color: rgb(226 232 240); /* slate-200 */
+      }
+      html.dark code.bg-slate-100 {
+        background-color: rgb(51 65 85); /* slate-700 */
+        color: rgb(226 232 240); /* slate-200 */
+      }
+
+      /* Dark mode - Prose blockquote */
+      html.dark .prose blockquote {
+        border-color: rgb(71 85 105); /* slate-600 */
+        color: rgb(148 163 184); /* slate-400 */
+      }
+
+      /* Dark mode - Prose table */
+      html.dark .prose th,
+      html.dark .prose td {
+        border-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark .prose th {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+
+      /* Dark mode - Prose paragraph links */
+      html.dark .prose a.paragraph-link {
+        color: rgb(100 116 139); /* slate-500 */
+        opacity: 0.8;
+      }
+      html.dark .prose .heading-anchor:hover a.paragraph-link {
+        opacity: 1;
+        color: #0dc09d; /* primary */
+      }
+
+      /* Dark mode - Badges/tags */
+      html.dark .bg-purple-100 {
+        background-color: rgba(139, 92, 246, 0.2); /* purple with opacity */
+        color: rgb(196 181 253); /* purple-300 */
+      }
+      html.dark .bg-red-100 {
+        background-color: rgba(239, 68, 68, 0.2); /* red with opacity */
+        color: rgb(252 165 165); /* red-300 */
+      }
+      html.dark .bg-yellow-100 {
+        background-color: rgba(234, 179, 8, 0.2); /* yellow with opacity */
+        color: rgb(253 224 71); /* yellow-300 */
+      }
+      html.dark .bg-green-100 {
+        background-color: rgba(34, 197, 94, 0.2); /* green with opacity */
+        color: rgb(134 239 172); /* green-300 */
+      }
+      html.dark .bg-primary-light {
+        background-color: rgba(13, 192, 157, 0.2); /* primary with opacity */
+      }
+
+      /* Dark mode - Search highlight */
+      html.dark .search-highlight {
+        background-color: rgba(234, 179, 8, 0.3); /* yellow with opacity */
+        color: rgb(253 224 71); /* yellow-300 */
+      }
+
+      /* Dark mode - Help text background */
+      html.dark .prose.bg-slate-100 {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+
+      /* ==================== GitHub-style Alerts ==================== */
+
+      .alert {
+        padding: 1rem;
+        margin: 1em 0;
+        border-radius: 0.375rem;
+        border-left-width: 4px;
+        border-left-style: solid;
+      }
+      .alert-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .alert-icon {
+        flex-shrink: 0;
+        fill: currentColor;
+      }
+      .alert-content {
+        margin: 0;
+      }
+      .alert-content p:first-child {
+        margin-top: 0;
+      }
+      .alert-content p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Note - Blue */
+      .alert-note {
+        background-color: rgb(239 246 255); /* blue-50 */
+        border-left-color: rgb(59 130 246); /* blue-500 */
+      }
+      .alert-note .alert-title {
+        color: rgb(29 78 216); /* blue-700 */
+      }
+
+      /* Tip - Green */
+      .alert-tip {
+        background-color: rgb(240 253 244); /* green-50 */
+        border-left-color: rgb(34 197 94); /* green-500 */
+      }
+      .alert-tip .alert-title {
+        color: rgb(21 128 61); /* green-700 */
+      }
+
+      /* Important - Purple */
+      .alert-important {
+        background-color: rgb(250 245 255); /* purple-50 */
+        border-left-color: rgb(168 85 247); /* purple-500 */
+      }
+      .alert-important .alert-title {
+        color: rgb(126 34 206); /* purple-700 */
+      }
+
+      /* Warning - Yellow/Amber */
+      .alert-warning {
+        background-color: rgb(254 252 232); /* yellow-50 */
+        border-left-color: rgb(234 179 8); /* yellow-500 */
+      }
+      .alert-warning .alert-title {
+        color: rgb(161 98 7); /* yellow-700 */
+      }
+
+      /* Caution - Red */
+      .alert-caution {
+        background-color: rgb(254 242 242); /* red-50 */
+        border-left-color: rgb(239 68 68); /* red-500 */
+      }
+      .alert-caution .alert-title {
+        color: rgb(185 28 28); /* red-700 */
+      }
+
+      /* ==================== Dark Mode Alerts ==================== */
+
+      html.dark .alert-note {
+        background-color: rgba(59, 130, 246, 0.1); /* blue with opacity */
+        border-left-color: rgb(96 165 250); /* blue-400 */
+      }
+      html.dark .alert-note .alert-title {
+        color: rgb(147 197 253); /* blue-300 */
+      }
+
+      html.dark .alert-tip {
+        background-color: rgba(34, 197, 94, 0.1); /* green with opacity */
+        border-left-color: rgb(74 222 128); /* green-400 */
+      }
+      html.dark .alert-tip .alert-title {
+        color: rgb(134 239 172); /* green-300 */
+      }
+
+      html.dark .alert-important {
+        background-color: rgba(168, 85, 247, 0.1); /* purple with opacity */
+        border-left-color: rgb(192 132 252); /* purple-400 */
+      }
+      html.dark .alert-important .alert-title {
+        color: rgb(216 180 254); /* purple-300 */
+      }
+
+      html.dark .alert-warning {
+        background-color: rgba(234, 179, 8, 0.1); /* yellow with opacity */
+        border-left-color: rgb(250 204 21); /* yellow-400 */
+      }
+      html.dark .alert-warning .alert-title {
+        color: rgb(253 224 71); /* yellow-300 */
+      }
+
+      html.dark .alert-caution {
+        background-color: rgba(239, 68, 68, 0.1); /* red with opacity */
+        border-left-color: rgb(248 113 113); /* red-400 */
+      }
+      html.dark .alert-caution .alert-title {
+        color: rgb(252 165 165); /* red-300 */
+      }
+
+      /* ==================== Syntax Highlighting (Pygments) ==================== */
+
+      /* Code block container styling - dark background in both light and dark modes */
+      .highlight {
+        background: rgb(30 41 59); /* slate-800 */
+        color: #c9d1d9; /* light gray text */
+        border-radius: 0.5rem;
+        padding: 1rem;
+        overflow-x: auto;
+        margin: 1em 0;
+      }
+      .highlight pre {
+        margin: 0;
+        background: none;
+        padding: 0;
+        line-height: 1.5;
+        color: inherit;
+      }
+      /* Override .prose code styles inside .highlight with high specificity */
+      .prose .highlight code,
+      .highlight code {
+        background: none !important;
+        padding: 0 !important;
+        font-size: 0.875em;
+        color: inherit;
+      }
+
+      /* Syntax highlighting - dark theme for both light and dark modes */
+      .highlight .hll {
+        background-color: #49483e;
+      }
+      .highlight .c {
+        color: #8b949e;
+      } /* Comment */
+      .highlight .err {
+        color: #f97583;
+      } /* Error */
+      .highlight .k {
+        color: #ff7b72;
+      } /* Keyword */
+      .highlight .o {
+        color: #ff7b72;
+      } /* Operator */
+      .highlight .ch {
+        color: #8b949e;
+      } /* Comment.Hashbang */
+      .highlight .cm {
+        color: #8b949e;
+      } /* Comment.Multiline */
+      .highlight .cp {
+        color: #ff7b72;
+      } /* Comment.Preproc */
+      .highlight .cpf {
+        color: #8b949e;
+      } /* Comment.PreprocFile */
+      .highlight .c1 {
+        color: #8b949e;
+      } /* Comment.Single */
+      .highlight .cs {
+        color: #8b949e;
+      } /* Comment.Special */
+      .highlight .gd {
+        color: #ffa198;
+        background-color: #490202;
+      } /* Generic.Deleted */
+      .highlight .ge {
+        font-style: italic;
+      } /* Generic.Emph */
+      .highlight .gr {
+        color: #ffa198;
+      } /* Generic.Error */
+      .highlight .gh {
+        color: #79c0ff;
+        font-weight: 600;
+      } /* Generic.Heading */
+      .highlight .gi {
+        color: #56d364;
+        background-color: #0f5323;
+      } /* Generic.Inserted */
+      .highlight .go {
+        color: #8b949e;
+      } /* Generic.Output */
+      .highlight .gp {
+        color: #8b949e;
+        font-weight: 600;
+      } /* Generic.Prompt */
+      .highlight .gs {
+        font-weight: 600;
+      } /* Generic.Strong */
+      .highlight .gu {
+        color: #d2a8ff;
+        font-weight: 600;
+      } /* Generic.Subheading */
+      .highlight .gt {
+        color: #ffa198;
+      } /* Generic.Traceback */
+      .highlight .kc {
+        color: #79c0ff;
+      } /* Keyword.Constant */
+      .highlight .kd {
+        color: #ff7b72;
+      } /* Keyword.Declaration */
+      .highlight .kn {
+        color: #ff7b72;
+      } /* Keyword.Namespace */
+      .highlight .kp {
+        color: #ff7b72;
+      } /* Keyword.Pseudo */
+      .highlight .kr {
+        color: #ff7b72;
+      } /* Keyword.Reserved */
+      .highlight .kt {
+        color: #d2a8ff;
+      } /* Keyword.Type */
+      .highlight .m {
+        color: #79c0ff;
+      } /* Literal.Number */
+      .highlight .s {
+        color: #a5d6ff;
+      } /* Literal.String */
+      .highlight .na {
+        color: #d2a8ff;
+      } /* Name.Attribute */
+      .highlight .nb {
+        color: #79c0ff;
+      } /* Name.Builtin */
+      .highlight .nc {
+        color: #f0883e;
+        font-weight: 600;
+      } /* Name.Class */
+      .highlight .no {
+        color: #79c0ff;
+      } /* Name.Constant */
+      .highlight .nd {
+        color: #d2a8ff;
+      } /* Name.Decorator */
+      .highlight .ni {
+        color: #c9d1d9;
+      } /* Name.Entity */
+      .highlight .ne {
+        color: #f0883e;
+        font-weight: 600;
+      } /* Name.Exception */
+      .highlight .nf {
+        color: #d2a8ff;
+      } /* Name.Function */
+      .highlight .nl {
+        color: #79c0ff;
+      } /* Name.Label */
+      .highlight .nn {
+        color: #ff7b72;
+      } /* Name.Namespace */
+      .highlight .nt {
+        color: #7ee787;
+      } /* Name.Tag */
+      .highlight .nv {
+        color: #ffa657;
+      } /* Name.Variable */
+      .highlight .ow {
+        color: #ff7b72;
+        font-weight: 600;
+      } /* Operator.Word */
+      .highlight .w {
+        color: #6e7681;
+      } /* Text.Whitespace */
+      .highlight .mb {
+        color: #79c0ff;
+      } /* Literal.Number.Bin */
+      .highlight .mf {
+        color: #79c0ff;
+      } /* Literal.Number.Float */
+      .highlight .mh {
+        color: #79c0ff;
+      } /* Literal.Number.Hex */
+      .highlight .mi {
+        color: #79c0ff;
+      } /* Literal.Number.Integer */
+      .highlight .mo {
+        color: #79c0ff;
+      } /* Literal.Number.Oct */
+      .highlight .sa {
+        color: #a5d6ff;
+      } /* Literal.String.Affix */
+      .highlight .sb {
+        color: #a5d6ff;
+      } /* Literal.String.Backtick */
+      .highlight .sc {
+        color: #a5d6ff;
+      } /* Literal.String.Char */
+      .highlight .dl {
+        color: #a5d6ff;
+      } /* Literal.String.Delimiter */
+      .highlight .sd {
+        color: #a5d6ff;
+      } /* Literal.String.Doc */
+      .highlight .s2 {
+        color: #a5d6ff;
+      } /* Literal.String.Double */
+      .highlight .se {
+        color: #79c0ff;
+      } /* Literal.String.Escape */
+      .highlight .sh {
+        color: #a5d6ff;
+      } /* Literal.String.Heredoc */
+      .highlight .si {
+        color: #a5d6ff;
+      } /* Literal.String.Interpol */
+      .highlight .sx {
+        color: #a5d6ff;
+      } /* Literal.String.Other */
+      .highlight .sr {
+        color: #a5d6ff;
+      } /* Literal.String.Regex */
+      .highlight .s1 {
+        color: #a5d6ff;
+      } /* Literal.String.Single */
+      .highlight .ss {
+        color: #79c0ff;
+      } /* Literal.String.Symbol */
+      .highlight .bp {
+        color: #79c0ff;
+      } /* Name.Builtin.Pseudo */
+      .highlight .fm {
+        color: #d2a8ff;
+      } /* Name.Function.Magic */
+      .highlight .vc {
+        color: #ffa657;
+      } /* Name.Variable.Class */
+      .highlight .vg {
+        color: #ffa657;
+      } /* Name.Variable.Global */
+      .highlight .vi {
+        color: #ffa657;
+      } /* Name.Variable.Instance */
+      .highlight .vm {
+        color: #ffa657;
+      } /* Name.Variable.Magic */
+      .highlight .il {
+        color: #79c0ff;
+      } /* Literal.Number.Integer.Long */
+      .highlight .p {
+        color: #8b949e;
+      } /* Punctuation */
+      .highlight .x {
+        color: #c9d1d9;
+      } /* Other */
+
+      /* ==================== Footer Styles ==================== */
+
+      .page-footer {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgb(226 232 240); /* slate-200 */
+      }
+      .page-footer .footer-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        color: rgb(100 116 139); /* slate-500 */
+        font-size: 0.875rem;
+      }
+      .page-footer .footer-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .page-footer a {
+        color: #0dc09d;
+        text-decoration: none;
+      }
+      .page-footer a:hover {
+        text-decoration: underline;
+      }
+      .page-footer .nextflow-logo {
+        height: 1.25rem;
+        width: auto;
+      }
+      .page-footer a.footer-logo-link {
+        color: inherit;
+      }
+      .page-footer .nf-docs-version {
+        font-family: ui-monospace, monospace;
+        font-size: 0.75rem;
+        background-color: rgb(241 245 249); /* slate-100 */
+        padding: 0.125rem 0.375rem;
+        border-radius: 0.25rem;
+      }
+
+      /* Dark mode footer */
+      html.dark .page-footer {
+        border-top-color: rgb(51 65 85); /* slate-700 */
+      }
+      html.dark .page-footer .footer-content {
+        color: rgb(148 163 184); /* slate-400 */
+      }
+      html.dark .page-footer .nf-docs-version {
+        background-color: rgb(51 65 85); /* slate-700 */
+      }
+    </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#0DC09D",
+                light: "#E6F9F5",
+                dark: "#0A9A7D",
+              },
+            },
+          },
+        },
+      };
+    </script>
+</head>
+  <body class="font-sans leading-relaxed text-slate-800 bg-slate-50">
+    <!-- Top Navigation Bar -->
+    <header
+      class="fixed top-0 left-0 right-0 h-14 bg-white border-b border-slate-200 z-50 flex items-center px-4 md:px-6"
+    >
+      <!-- Mobile menu button -->
+      
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden mr-3 p-1.5 rounded hover:bg-slate-100 transition-colors"
+        aria-label="Open menu"
+      >
+        <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+      </button>
+      
+
+      <!-- Left: Organization/user avatar (GitHub only) and pipeline name -->
+      <a
+        href="#overview"
+        id="top-nav-home"
+        class="flex items-center hover:opacity-80 transition-opacity"
+      >
+        
+        <img
+          id="repo-avatar"
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAE50lEQVR4nOxYXYwTVRuemTMzbee33W53226X74PG7IoKJIpCxEQhapRsRC+ISCAm/hE0ISHRmJDwE+OFUZeExHAhJkjCFYqQgDGBQAwgLlmMoOsCotItlG13+z8znen0zDEH7ToXa2inzTY1fW52n7fnfc/zzJz3nJmhiDZHx0Cr0THQanQMtBodA60G3fSKgKbYcDTKBCLzKU6SSZq+60WCxVxavXjipJPpmmZAeOTZ1fKT6zd5BpaupBiWqydX/2PsQssMALnbF3xz9+f8oseGGq3lBA0ZoHhZ7H/v8Hdsz7zB5kmqDw0ZCLy886PZxFslJWPEr16GxWwamQa8Wx0zFb/uVINjA0x4wXxpxZpX7DH9xi8jqf073tKvjI4SBHJaui44NiA8/MwLJEmCKi8nJ67Ed65diXRFa5q6GuD4HHBHFz1k5/mTB/fOtXiikTsAOKnbzs1U/Hc7Fwa9S9hud7iWWhXFzBd+TJ9zoqOBJv5n+fxFCctOQ2vmv+NfEVpXSyX1t/zoT1vOLXWiou0fJdregOMlZExcuUwAaiYfFjIZ+++luDJeGMt8O+ukAuPl/icudjq3HWQzitQL+cHAE/fuWnqqytu+BxBCdz2t/w0tMQA8QLRzM1dOOK3luAfc0SUPUILXV+XGjbGfYX5qpg+4BdIg43P1zJbb81T/q3auXMuNONXh2ED3+nd3cwuXraryxO7NQ8rI18eqvG9tdHst5wCykDl9+tZBpzpa3gOTx2PDxu3STaf5LTWQvzR9PLZvfFsjNZr/TlwD8K6TPD4xHPtsfBsBne9AxFwawKL1hDaeHUkeTX4z8amR0GLNqOv4IGPnDQwCTpKr3Lh1/apVzOaq3B3ho4zE4idWWFHMgjFVmrBKUG+G6P8UWr4LNYp6egAE/P69iqoeKOn62dkGdMne7YAGfdOZzBaE0J3lwtLMoCxLW6tjEEKaomqHdEO/8wLDMMwAzsN/K5VKLJPL7Sqb5cu1iqr5DuD3X0kQX2MZZtZPKDSg+72yvEMSxNd5DzfzjYim6T6cR5Ikj+dzu1zLw729pwBF4f4gwz29J2gaRIqKsp+iSCkcDJ6mSEqqVVfTdiFR4DdYlpUyK+avoiBsVDT1kP33dDa7FUKYdLvcy/qCwfMUAF0IEQZN0/35YnFPvlj4pKgqByVB3EBSJEdAojCnBgReWK9q2pGyaY75fb5hfBUtZM2IiITCPxAEgoACAaNsnDdN8xqOa6XSMb/P96FXkt7WDeNMUVUOQAgna523KU3MMswAyzALLWRN4x2VJEmG57nn7WOmM+lNyampl/CdcLGu5ZzH8zSO304lh+K3E/fnCoUPAKD8wUDPUd7DrZ5TAwLPr0MImZIgvtHl9b6PECoJHP+ifYxuGBd0wziraupXxJ2eAf24byKh0CigqN5cIT98a3JyFUKoTNP0PbXOXfcS8vu69nR5fR/j/yuwEosnEotFXthYVJR9U5n0ZhyXRXEzHkcDEKrmRULhS/jZE1DAW4Hwpqpph6FlZSwLFYKBniPYHEPT/7csK6dq2pe16qnnJCZ5jnvOHsBbYknXz+DlYBjlixVYieM4RVFej9v9OL7qBCJMt9v1qC1H0XX9ewsh5e8QEDhuiGHY+yzLyiqa+gWEMFWHrvZG25/EHQOtRsdAq/FnAAAA//9fFfKsG94jEAAAAABJRU5ErkJggg=="
+          alt="Organization avatar"
+          class="w-6 h-6 rounded mr-2"
+        />
+        
+        <h1 class="text-lg font-bold text-primary">nf-fgsv workflow parameters</h1>
+        
+        <span class="ml-2 text-sm text-slate-500"
+          >v0.1.0</span
+        >
+        
+      </a>
+
+      <!-- Right: Search and GitHub link -->
+      <div class="ml-auto flex items-center gap-4">
+        <!-- Search (hidden on mobile, shown in mobile menu) -->
+        
+        <div class="relative hidden md:block">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search..."
+            class="w-48 md:w-64 px-3 py-1.5 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          />
+          <button
+            id="search-clear"
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hidden"
+            title="Clear search"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        
+
+        <!-- Dark mode toggle -->
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          title="Toggle dark mode"
+          aria-label="Toggle dark mode"
+        >
+          <!-- Sun icon (shown in dark mode) -->
+          <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            ></path>
+          </svg>
+          <!-- Moon icon (shown in light mode) -->
+          <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- Repository link -->
+        
+        <a
+          href="https://github.com/fg-labs/nf-fgsv"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-1.5 text-sm text-slate-600 hover:text-primary transition-colors"
+          title="View repository"
+        >
+          
+          <!-- GitHub icon -->
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+            ></path>
+          </svg>
+          <span class="hidden sm:inline">GitHub</span>
+          
+        </a>
+        
+      </div>
+    </header>
+
+    
+    <!-- Mobile Navigation Drawer -->
+    <div
+      id="mobile-menu-overlay"
+      class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"
+      aria-hidden="true"
+    ></div>
+    <aside
+      id="mobile-menu"
+      class="fixed top-0 left-0 h-full w-72 bg-white z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-xl"
+    >
+      <div class="flex items-center justify-between p-4 border-b border-slate-200">
+        <span class="font-bold text-primary">nf-fgsv workflow parameters</span>
+        <button
+          id="mobile-menu-close"
+          class="p-1.5 rounded hover:bg-slate-100"
+          aria-label="Close menu"
+        >
+          <svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation Links -->
+      
+      <div id="mobile-main-nav">
+        <nav class="p-4 border-b border-slate-200">
+          <!-- Search link for mobile -->
+          <a
+            href="#search-results"
+            id="mobile-search-link"
+            class="flex items-center gap-2 px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
+            Search
+          </a>
+          <hr class="my-2 border-slate-200" />
+          <!-- Table of contents link for mobile -->
+          <button
+            id="mobile-toc-link"
+            class="flex items-center gap-2 px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800 w-full text-left"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 10h16M4 14h16M4 18h16"
+              ></path>
+            </svg>
+            Table of contents
+          </button>
+        </nav>
+
+        <!-- Mobile Navigation Links -->
+        <nav class="p-4 overflow-y-auto" style="max-height: calc(100vh - 180px)">
+          <ul class="space-y-1">
+            <li>
+              <a
+                href="#overview"
+                class="mobile-nav-link block px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800"
+                data-section="overview"
+                >Overview</a
+              >
+            </li>
+
+            
+            <li>
+              <a
+                href="#inputs"
+                class="mobile-nav-link block px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800"
+                data-section="inputs"
+                >Parameters</a
+              >
+            </li>
+              
+            <li>
+              <a
+                href="#workflows"
+                class="mobile-nav-link block px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800"
+                data-section="workflows"
+                >Workflows</a
+              >
+            </li>
+             
+            <li>
+              <a
+                href="#processes"
+                class="mobile-nav-link block px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800"
+                data-section="processes"
+                >Processes</a
+              >
+            </li>
+             
+          </ul>
+
+          
+          <div class="mt-6 pt-4 border-t border-slate-200">
+            <a
+              href="https://github.com/fg-labs/nf-fgsv"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:text-primary transition-colors"
+            >
+              
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                ></path>
+              </svg>
+              View on GitHub 
+            </a>
+          </div>
+          
+        </nav>
+      </div>
+      
+
+      <!-- Mobile Table of Contents (hidden by default) -->
+      <div id="mobile-toc-nav" class="hidden h-full flex flex-col">
+        <!-- Floating back button -->
+        <div class="sticky top-0 z-10 p-4 border-b border-slate-200 bg-white">
+          <button
+            id="mobile-toc-back"
+            class="flex items-center gap-2 px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800 w-full text-left"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              ></path>
+            </svg>
+            Back to navigation
+          </button>
+        </div>
+        <!-- ToC content -->
+        <nav id="mobile-toc-content" class="p-4 overflow-y-auto flex-1">
+          <!-- Content will be populated by JavaScript -->
+        </nav>
+      </div>
+    </aside>
+    
+
+    <div class="flex min-h-screen pt-14">
+      
+      <!-- Left Sidebar - Main Navigation -->
+      <aside
+        id="left-nav"
+        class="w-56 bg-white border-r border-slate-200 p-6 fixed top-14 h-[calc(100vh-3.5rem)] overflow-y-auto hidden md:block"
+      >
+        <nav>
+          <ul class="space-y-1">
+            <li>
+              <a
+                href="#overview"
+                class="nav-link block px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800 bg-primary text-white"
+                data-section="overview"
+                >Overview</a
+              >
+            </li>
+
+            
+            <li>
+              <a
+                href="#inputs"
+                class="nav-link block px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800"
+                data-section="inputs"
+                >Parameters</a
+              >
+            </li>
+              
+            <li>
+              <a
+                href="#workflows"
+                class="nav-link block px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800"
+                data-section="workflows"
+                >Workflows</a
+              >
+            </li>
+             
+            <li>
+              <a
+                href="#processes"
+                class="nav-link block px-3 py-2 rounded transition-colors hover:bg-slate-100 text-slate-800"
+                data-section="processes"
+                >Processes</a
+              >
+            </li>
+             
+          </ul>
+        </nav>
+      </aside>
+      
+
+      <!-- Main content -->
+      <main
+        class="md:ml-56 lg:mr-64 flex-1 p-4 md:p-8 lg:p-12"
+      >
+        
+        <!-- Search Results Section (hidden by default) -->
+        
+        <section id="search-results" class="section hidden">
+          <h1 class="text-3xl font-bold mb-4 text-slate-800">Search Results</h1>
+
+          <!-- Mobile search input (visible only on mobile) -->
+          <div class="md:hidden mb-4">
+            <div class="relative">
+              <input
+                type="text"
+                id="mobile-search-input"
+                placeholder="Search..."
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                id="mobile-search-clear"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hidden"
+                title="Clear search"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <p id="search-query-wrapper" class="mb-4 text-slate-600 hidden">
+            Showing results for "<span id="search-query-display" class="font-semibold"></span>"
+          </p>
+
+          <div id="search-empty-state" class="py-8 text-center text-slate-500">
+            <svg
+              class="w-12 h-12 mx-auto mb-4 text-slate-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
+            <p class="text-lg">Enter a search term</p>
+            <p class="text-sm mt-2">Find parameters, processes, workflows, and more</p>
+          </div>
+
+          <div id="search-results-content">
+            <!-- Results will be populated by JavaScript -->
+          </div>
+
+          <div id="search-no-results" class="hidden py-8 text-center text-slate-500">
+            <p class="text-lg">No results found</p>
+            <p class="text-sm mt-2">Try a different search term</p>
+          </div>
+        </section>
+         
+        <!-- Overview Section -->
+        <section id="overview" class="section">
+          <h1 class="text-3xl font-bold mb-4 text-slate-800">nf-fgsv workflow parameters</h1>
+
+          
+          <div class="prose mb-6 text-slate-600"><p>Nextflow workflow for running fgsv.</p></div>
+           
+          <div class="flex flex-wrap gap-4 mb-6">
+             
+            <a
+              href="https://github.com/fg-labs/nf-fgsv"
+              target="_blank"
+              class="inline-flex items-center gap-1.5 text-sm text-primary hover:underline"
+            >
+              
+              <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                ></path>
+              </svg>
+               https://github.com/fg-labs/nf-fgsv
+            </a>
+            
+          </div>
+           
+          <div id="readme-content" class="prose max-w-none text-slate-600">
+            <div class="alert alert-note"><div class="alert-title"><svg class="alert-icon" viewBox="0 0 16 16" width="16" height="16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></div><div class="alert-content"><p>This repository is primarily for testing the latest Nextflow features and the workflow is relatively simple.</p></div></div>
+<p>This is a Nextflow workflow for running <a href="https://github.com/fulcrumgenomics/fgsv">fgsv</a> on a BAM file to gather evidence for structural variation via breakpoint detection.</p>
+<p>
+<a href="https://fulcrumgenomics.com">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-light.svg">
+  <img alt="Fulcrum Genomics" src="https://raw.githubusercontent.com/fg-labs/nf-fgsv/main/.github/logos/fulcrumgenomics-light.svg" height="100" width="25%">
+</picture>
+</a>
+</p>
+
+<p><a href="https://www.fulcrumgenomics.com">Visit us at Fulcrum Genomics</a> to learn more about how we can power your Bioinformatics with nf-fgsv and beyond.</p>
+<p><a href="mailto:contact@fulcrumgenomics.com?subject=[GitHub inquiry]"><img src="https://img.shields.io/badge/Email_us-%2338b44a.svg?&style=for-the-badge&logo=gmail&logoColor=white"/></a>
+<a href="https://www.fulcrumgenomics.com"><img src="https://img.shields.io/badge/Visit_Us-%2326a8e0.svg?&style=for-the-badge&logo=wordpress&logoColor=white"/></a></p>
+<h2 id="readme-set-up-environment" class="heading-anchor">Set up Environment<a href="#readme-set-up-environment" class="paragraph-link">¶</a></h2>
+<p>Make sure <a href="https://pixi.sh/latest/#installation">Pixi</a> and <a href="https://docs.docker.com/engine/install/">Docker</a> are installed.</p>
+<p>The environment for this analysis is in <a href="pixi.toml">pixi.toml</a> and is named <code>nf-fgsv</code>.</p>
+<p>To install:</p>
+<div class="highlight"><pre><span></span><code><span class="go">pixi install</span>
+</code></pre></div>
+
+<h2 id="readme-run-the-workflow" class="heading-anchor">Run the Workflow<a href="#readme-run-the-workflow" class="paragraph-link">¶</a></h2>
+<p>To save on typing, a pixi task is available which aliases <code>nextflow run main.nf</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="go">pixi run \</span>
+<span class="go">    nf-workflow \</span>
+<span class="go">        -profile &quot;local,docker&quot; \</span>
+<span class="go">        --input tests/data/basic_input.tsv</span>
+</code></pre></div>
+
+<h2 id="readme-available-execution-profiles" class="heading-anchor">Available Execution Profiles<a href="#readme-available-execution-profiles" class="paragraph-link">¶</a></h2>
+<p>Several default profiles are available:</p>
+<ul>
+<li><code>local</code> limits the resources used by the workflow to (hopefully) reasonable levels</li>
+<li><code>docker</code> specifies docker containers should be used for process execution</li>
+<li><code>linux</code> adds <code>--user root</code> to docker <code>runOptions</code></li>
+</ul>
+<h2 id="readme-inputs" class="heading-anchor">Inputs<a href="#readme-inputs" class="paragraph-link">¶</a></h2>
+<p>A full description of input parameters is available using the workflow <code>--help</code> parameter, <code>pixi run nf-workflow --help</code>.</p>
+<p>The required columns in the <code>--input</code> samplesheet are:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sample</code></td>
+<td>String, no whitespace</td>
+<td>Sample identifier</td>
+</tr>
+<tr>
+<td><code>bam</code></td>
+<td>Absolute path</td>
+<td>Path to the BAM file for this sample (may be an AWS S3 path)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="readme-parameter-files" class="heading-anchor">Parameter files<a href="#readme-parameter-files" class="paragraph-link">¶</a></h3>
+<p>If using more than a few parameters, consider saving them in a YAML format file (e.g. <a href="tests/integration/params.yml">tests/integration/params.yml</a>).</p>
+<div class="highlight"><pre><span></span><code><span class="go">pixi run \</span>
+<span class="go">    nf-workflow \</span>
+<span class="go">        -profile &quot;local,docker&quot; \</span>
+<span class="go">        -params-file my_params.yml</span>
+</code></pre></div>
+
+<h2 id="readme-outputs" class="heading-anchor">Outputs<a href="#readme-outputs" class="paragraph-link">¶</a></h2>
+<p>The output directory can be specified using the <code>-output-dir</code> Nextflow parameter.
+The default output directory is <code>results/</code>.
+<code>-output-dir</code> cannot be specified in a <code>params.yml</code> file, because it is a Nextflow parameter rather than a workflow parameter.
+It must be specified on the command line or in a <code>nextflow.config</code> file.</p>
+<div class="highlight"><pre><span></span><code><span class="go">pixi run \</span>
+<span class="go">    nf-workflow \</span>
+<span class="go">        -profile &quot;local,docker&quot; \</span>
+<span class="go">        --input tests/data/basic_input.tsv \</span>
+<span class="go">        -output-dir results</span>
+</code></pre></div>
+
+<details>
+<summary>Click to toggle output directory structure</summary>
+
+
+
+<div class="highlight"><pre><span></span><code><span class="go">results</span>
+<span class="go">└── {sample_name}</span>
+<span class="go">    ├── {sample_name}_sorted.bam                # Coordinate-sorted BAM file</span>
+<span class="go">    ├── {sample_name}_svpileup.txt              # SvPileup breakpoint candidates</span>
+<span class="go">    ├── {sample_name}_svpileup.bam              # BAM with SV tags from SvPileup</span>
+<span class="go">    ├── {sample_name}_svpileup.aggregate.txt    # Aggregated/merged breakpoint pileups</span>
+<span class="go">    └── {sample_name}_svpileup.aggregate.bedpe  # Aggregated pileups in BEDPE format</span>
+</code></pre></div>
+
+
+
+</details>
+
+<h3 id="readme-output-file-descriptions" class="heading-anchor">Output File Descriptions<a href="#readme-output-file-descriptions" class="paragraph-link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*_sorted.bam</code></td>
+<td>Input BAM sorted by genomic coordinates using samtools sort</td>
+</tr>
+<tr>
+<td><code>*_svpileup.txt</code></td>
+<td>Candidate structural variant breakpoints identified by <a href="https://github.com/fulcrumgenomics/fgsv">fgsv SvPileup</a></td>
+</tr>
+<tr>
+<td><code>*_svpileup.bam</code></td>
+<td>BAM file with SV-related tags added by SvPileup</td>
+</tr>
+<tr>
+<td><code>*_svpileup.aggregate.txt</code></td>
+<td>Merged breakpoint pileups from <a href="https://github.com/fulcrumgenomics/fgsv">fgsv AggregateSvPileup</a></td>
+</tr>
+<tr>
+<td><code>*_svpileup.aggregate.bedpe</code></td>
+<td>Aggregated pileups converted to <a href="https://bedtools.readthedocs.io/en/latest/content/general-usage.html#bedpe-format">BEDPE format</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="readme-contributing" class="heading-anchor">Contributing<a href="#readme-contributing" class="paragraph-link">¶</a></h2>
+<p>See our <a href="docs/CONTRIBUTING.md">Contributing Guide</a> for development and testing guidelines.</p>
+          </div>
+           
+          <h2 class="text-2xl font-semibold mt-8 mb-4 pb-2 border-b border-slate-200">Authors</h2>
+          <ul class="list-disc list-inside mb-4">
+            
+            <li>Fulcrum Genomics</li>
+            
+          </ul>
+          
+        </section>
+        
+
+        <!-- Inputs Section -->
+        
+        <section id="inputs" class="section hidden">
+          <h1 class="text-3xl font-bold mb-4 text-slate-800">Pipeline Inputs</h1>
+          <p class="mb-4 text-slate-600">
+            This page documents all input parameters for the pipeline.
+          </p>
+
+          
+          <h2
+            id="inputs-main-workflow-parameters"
+            class="text-2xl font-semibold mt-8 mb-4 pb-2 border-b border-slate-200 heading-anchor"
+          >
+            Main workflow parameters
+            <a href="#inputs-main-workflow-parameters" class="paragraph-link">¶</a>
+          </h2>
+
+          
+          <div
+            id="param-input"
+            class="mb-6 pb-6 border-b border-slate-200 last:border-b-0"
+          >
+            <div class="font-mono font-semibold text-lg heading-anchor">
+              --input
+              <a href="#param-input" class="paragraph-link">¶</a>
+            </div>
+            <div class="flex flex-wrap gap-2 my-2">
+              <span
+                class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700"
+              >
+                string
+              </span>
+              
+              <span
+                class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700"
+              >
+                file-path
+              </span>
+               
+              <span
+                class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
+              >
+                Pattern: <code class="font-mono">.*.tsv$</code>
+              </span>
+               
+              <span
+                class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-600"
+              >
+                Required
+              </span>
+              
+            </div>
+            
+            <div class="prose mb-2 text-slate-600"><p>Path to a tab-separated values (TSV) sample sheet describing the samples to analyze. The file must have a header row with the following required columns:</p>
+<ul>
+<li><code>sample</code>: a unique sample identifier containing no whitespace; used as the <code>meta.id</code> that names per-sample outputs.</li>
+<li><code>bam</code>: path to an existing BAM file for the sample (must end in <code>.bam</code>).</li>
+</ul>
+<p>See <code>schemas/input_schema.json</code> for the full validation rules.</p></div>
+               
+          </div>
+           
+        </section>
+         
+        <!-- Config Section -->
+         
+
+        <!-- Workflows Section -->
+        
+        <section id="workflows" class="section hidden">
+          
+          <h1 class="text-3xl font-bold mb-4 text-slate-800">Workflows</h1>
+          <p class="mb-4 text-slate-600">This page documents all workflows in the pipeline.</p>
+           
+          <div
+            id="workflow-entry"
+            class="bg-white border border-slate-200 rounded-lg p-4 mb-4"
+          >
+            <!-- Signature header like Sphinx API docs -->
+            <div
+              class="bg-slate-100 border-l-4 border-primary px-4 py-2 mb-4 font-mono text-sm heading-anchor"
+            >
+              <span class="text-slate-500 italic">workflow</span>
+              <span class="font-bold text-primary-dark">&lt;entry&gt;</span>
+              
+              <span
+                class="ml-2 inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700"
+              >
+                Entry Point
+              </span>
+               
+              <a
+                href="https://github.com/fg-labs/nf-fgsv/blob/7bf9e7f223cc880a29a981de84835bf220e3f558/main.nf#L35-L51"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="ml-2 text-slate-400 hover:text-primary no-underline"
+                title="View source code"
+                >[source]</a
+              >
+              
+              <a href="#workflow-entry" class="paragraph-link">¶</a>
+            </div>
+            
+            <div class="text-xs text-slate-400 mb-2">
+              Defined in <code>main.nf:35</code>
+            </div>
+            
+
+            <!-- Keywords badges (from meta.yml) -->
+            
+
+            <!-- meta.yml description (if present) -->
+            
+
+            <!-- Code documentation (Groovydoc) - show if present and different from meta description -->
+             
+            <div class="prose mb-4 text-slate-600"><p>Detect structural-variant breakpoints from aligned reads using fgsv.
+The <code>--input</code> sample sheet provides one <code>sample</code> identifier and <code>bam</code> path per
+row (see the <code>--input</code> parameter for the full column specification). Every
+per-sample output — the sorted BAM, SvPileup BAM and text, aggregated
+breakpoints, and BEDPE — is published via the <code>sample_outputs</code> topic into a
+directory named after the sample's <code>meta.id</code>. For each sample the workflow runs:</p>
+<ol>
+<li><code>COORDINATE_SORT</code> — coordinate-sort the input BAM with samtools.</li>
+<li><code>SV_PILEUP</code> — gather read-level evidence for structural variants (fgsv SvPileup).</li>
+<li><code>AGGREGATE_SV_PILEUP</code> — merge pileups that likely support the same breakpoint.</li>
+<li><code>AGGREGATE_SV_PILEUP_TO_BEDPE</code> — convert the aggregated breakpoints to BEDPE.</li>
+</ol></div>
+            
+
+            <!-- Components section (from meta.yml - modules/subworkflows used) -->
+            
+
+            <!-- Inputs section - combine LSP inputs with meta.yml descriptions -->
+            
+
+            <!-- Outputs section - combine LSP outputs with meta.yml descriptions -->
+             
+
+            <!-- Authors/Maintainers (from meta.yml) -->
+            
+          </div>
+          
+        </section>
+        
+
+        <!-- Processes Section -->
+        
+        <section id="processes" class="section hidden">
+          
+          <h1 class="text-3xl font-bold mb-4 text-slate-800">Processes</h1>
+          <p class="mb-4 text-slate-600">This page documents all processes in the pipeline.</p>
+           
+          <div
+            id="process-AGGREGATE_SV_PILEUP"
+            class="bg-white border border-slate-200 rounded-lg p-4 mb-4"
+          >
+            <!-- Signature header like Sphinx API docs -->
+            <div
+              class="bg-slate-100 border-l-4 border-primary px-4 py-2 mb-4 font-mono text-sm heading-anchor"
+            >
+              <span class="text-slate-500 italic">process</span>
+              <span class="font-bold text-primary-dark">AGGREGATE_SV_PILEUP</span>
+              
+              <a
+                href="https://github.com/fg-labs/nf-fgsv/blob/7bf9e7f223cc880a29a981de84835bf220e3f558/modules/aggregate_sv_pileup.nf#L12-L36"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="ml-2 text-slate-400 hover:text-primary no-underline"
+                title="View source code"
+                >[source]</a
+              >
+               
+              <a href="#process-AGGREGATE_SV_PILEUP" class="paragraph-link">¶</a>
+            </div>
+            
+            <div class="text-xs text-slate-400 mb-2">
+              Defined in <code>modules/aggregate_sv_pileup.nf:12</code>
+            </div>
+            
+
+            <!-- Keywords badges (from meta.yml) -->
+            
+
+            <!-- meta.yml description (if present) -->
+            
+
+            <!-- Code documentation (Groovydoc) - show if present and different from meta description -->
+             
+            <div class="prose mb-4 text-slate-600"><p>Aggregate and merge pileups that are likely to support the same breakpoint
+using fgsv AggregateSvPileup.</p></div>
+            
+
+            <!-- Tools section (from meta.yml) -->
+            
+
+            <!-- Inputs section - combine LSP inputs with meta.yml descriptions -->
+            
+            <h3 class="text-lg font-semibold mt-4 mb-2">Inputs</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse mb-4">
+                <thead>
+                  <tr>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Name
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Type
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >meta</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >val</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Map containing sample information (must include 'id')</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >bam</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Input BAM file</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >txt</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>SvPileup breakpoint output file</p></div>
+                      
+                    </td>
+                  </tr>
+                   
+                </tbody>
+              </table>
+            </div>
+            
+
+            <!-- Outputs section - combine LSP outputs with meta.yml descriptions -->
+             
+
+            <!-- Authors/Maintainers (from meta.yml) -->
+            
+          </div>
+          
+          <div
+            id="process-AGGREGATE_SV_PILEUP_TO_BEDPE"
+            class="bg-white border border-slate-200 rounded-lg p-4 mb-4"
+          >
+            <!-- Signature header like Sphinx API docs -->
+            <div
+              class="bg-slate-100 border-l-4 border-primary px-4 py-2 mb-4 font-mono text-sm heading-anchor"
+            >
+              <span class="text-slate-500 italic">process</span>
+              <span class="font-bold text-primary-dark">AGGREGATE_SV_PILEUP_TO_BEDPE</span>
+              
+              <a
+                href="https://github.com/fg-labs/nf-fgsv/blob/7bf9e7f223cc880a29a981de84835bf220e3f558/modules/aggregate_sv_pileup_to_bedpe.nf#L11-L34"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="ml-2 text-slate-400 hover:text-primary no-underline"
+                title="View source code"
+                >[source]</a
+              >
+               
+              <a href="#process-AGGREGATE_SV_PILEUP_TO_BEDPE" class="paragraph-link">¶</a>
+            </div>
+            
+            <div class="text-xs text-slate-400 mb-2">
+              Defined in <code>modules/aggregate_sv_pileup_to_bedpe.nf:11</code>
+            </div>
+            
+
+            <!-- Keywords badges (from meta.yml) -->
+            
+
+            <!-- meta.yml description (if present) -->
+            
+
+            <!-- Code documentation (Groovydoc) - show if present and different from meta description -->
+             
+            <div class="prose mb-4 text-slate-600"><p>Convert aggregated SvPileup output to BEDPE format using fgsv
+AggregateSvPileupToBedPE.</p></div>
+            
+
+            <!-- Tools section (from meta.yml) -->
+            
+
+            <!-- Inputs section - combine LSP inputs with meta.yml descriptions -->
+            
+            <h3 class="text-lg font-semibold mt-4 mb-2">Inputs</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse mb-4">
+                <thead>
+                  <tr>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Name
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Type
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >meta</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >val</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Map containing sample information (must include 'id')</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >txt</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Aggregated SvPileup output file</p></div>
+                      
+                    </td>
+                  </tr>
+                   
+                </tbody>
+              </table>
+            </div>
+            
+
+            <!-- Outputs section - combine LSP outputs with meta.yml descriptions -->
+             
+
+            <!-- Authors/Maintainers (from meta.yml) -->
+            
+          </div>
+          
+          <div
+            id="process-COORDINATE_SORT"
+            class="bg-white border border-slate-200 rounded-lg p-4 mb-4"
+          >
+            <!-- Signature header like Sphinx API docs -->
+            <div
+              class="bg-slate-100 border-l-4 border-primary px-4 py-2 mb-4 font-mono text-sm heading-anchor"
+            >
+              <span class="text-slate-500 italic">process</span>
+              <span class="font-bold text-primary-dark">COORDINATE_SORT</span>
+              
+              <a
+                href="https://github.com/fg-labs/nf-fgsv/blob/7bf9e7f223cc880a29a981de84835bf220e3f558/modules/coordinate_sort.nf#L10-L31"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="ml-2 text-slate-400 hover:text-primary no-underline"
+                title="View source code"
+                >[source]</a
+              >
+               
+              <a href="#process-COORDINATE_SORT" class="paragraph-link">¶</a>
+            </div>
+            
+            <div class="text-xs text-slate-400 mb-2">
+              Defined in <code>modules/coordinate_sort.nf:10</code>
+            </div>
+            
+
+            <!-- Keywords badges (from meta.yml) -->
+            
+
+            <!-- meta.yml description (if present) -->
+            
+
+            <!-- Code documentation (Groovydoc) - show if present and different from meta description -->
+             
+            <div class="prose mb-4 text-slate-600"><p>Sort a BAM file by genomic coordinates using samtools sort.</p></div>
+            
+
+            <!-- Tools section (from meta.yml) -->
+            
+
+            <!-- Inputs section - combine LSP inputs with meta.yml descriptions -->
+            
+            <h3 class="text-lg font-semibold mt-4 mb-2">Inputs</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse mb-4">
+                <thead>
+                  <tr>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Name
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Type
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >meta</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >val</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Map containing sample information (must include 'id')</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >bam</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Input BAM file to be sorted</p></div>
+                      
+                    </td>
+                  </tr>
+                   
+                </tbody>
+              </table>
+            </div>
+            
+
+            <!-- Outputs section - combine LSP outputs with meta.yml descriptions -->
+             
+
+            <!-- Authors/Maintainers (from meta.yml) -->
+            
+          </div>
+          
+          <div
+            id="process-SV_PILEUP"
+            class="bg-white border border-slate-200 rounded-lg p-4 mb-4"
+          >
+            <!-- Signature header like Sphinx API docs -->
+            <div
+              class="bg-slate-100 border-l-4 border-primary px-4 py-2 mb-4 font-mono text-sm heading-anchor"
+            >
+              <span class="text-slate-500 italic">process</span>
+              <span class="font-bold text-primary-dark">SV_PILEUP</span>
+              
+              <a
+                href="https://github.com/fg-labs/nf-fgsv/blob/7bf9e7f223cc880a29a981de84835bf220e3f558/modules/sv_pileup.nf#L10-L35"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="ml-2 text-slate-400 hover:text-primary no-underline"
+                title="View source code"
+                >[source]</a
+              >
+               
+              <a href="#process-SV_PILEUP" class="paragraph-link">¶</a>
+            </div>
+            
+            <div class="text-xs text-slate-400 mb-2">
+              Defined in <code>modules/sv_pileup.nf:10</code>
+            </div>
+            
+
+            <!-- Keywords badges (from meta.yml) -->
+            
+
+            <!-- meta.yml description (if present) -->
+            
+
+            <!-- Code documentation (Groovydoc) - show if present and different from meta description -->
+             
+            <div class="prose mb-4 text-slate-600"><p>Detect structural variant evidence from a BAM file using fgsv SvPileup.</p></div>
+            
+
+            <!-- Tools section (from meta.yml) -->
+            
+
+            <!-- Inputs section - combine LSP inputs with meta.yml descriptions -->
+            
+            <h3 class="text-lg font-semibold mt-4 mb-2">Inputs</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse mb-4">
+                <thead>
+                  <tr>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Name
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Type
+                    </th>
+                    <th class="text-left p-3 border-b border-slate-200 bg-slate-100 font-semibold">
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >meta</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >val</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Map containing sample information (must include 'id')</p></div>
+                      
+                    </td>
+                  </tr>
+                  
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >bam</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm"
+                        >path</code
+                      >
+                    </td>
+                    <td class="p-3 border-b border-slate-200">
+                      
+                      <div class="prose prose-sm"><p>Input BAM file</p></div>
+                      
+                    </td>
+                  </tr>
+                   
+                </tbody>
+              </table>
+            </div>
+            
+
+            <!-- Outputs section - combine LSP outputs with meta.yml descriptions -->
+             
+
+            <!-- Authors/Maintainers (from meta.yml) -->
+            
+          </div>
+          
+        </section>
+        
+
+        <!-- Functions Section -->
+        
+
+        <!-- Page Footer -->
+        <footer class="page-footer">
+          <div class="footer-content">
+            <div class="footer-row">
+              <span>Pipeline built with</span>
+              <a
+                href="https://nextflow.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 footer-logo-link"
+              >
+                <!-- Nextflow Logo (using currentColor for light/dark mode compatibility) -->
+                <svg
+                  class="nextflow-logo"
+                  viewBox="0 0 1532 250"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 46.08C39.45 48.7 71.06 80.39 73.54 119.88H119.61C117.05 54.92 64.93 2.7 0 0V46.08Z"
+                    fill="#0DC09D"
+                  />
+                  <path
+                    d="M73.8 130.389C71.18 169.839 39.49 201.449 0 203.929V249.999C64.96 247.439 117.18 195.319 119.88 130.389H73.8Z"
+                    fill="#0DC09D"
+                  />
+                  <path
+                    d="M176.197 119.61C178.817 80.16 210.507 48.55 249.997 46.07V0C185.037 2.56 132.817 54.68 130.117 119.61H176.197Z"
+                    fill="#0DC09D"
+                  />
+                  <path
+                    d="M250.001 203.919C210.551 201.299 178.941 169.609 176.461 130.119H130.391C132.951 195.079 185.071 247.299 250.001 249.999V203.919Z"
+                    fill="#0DC09D"
+                  />
+                  <path
+                    d="M329.998 204.52V46.1299H360.698V71.0599H365.558C368.398 64.9799 373.458 59.3099 380.758 54.0399C388.058 48.7699 398.898 46.1399 413.288 46.1399C424.638 46.1399 434.718 48.6799 443.538 53.7399C452.358 58.8099 459.298 65.9499 464.358 75.1699C469.418 84.3899 471.958 95.4899 471.958 108.46V204.52H440.648V110.89C440.648 97.9199 437.408 88.3499 430.918 82.1599C424.428 75.9799 415.518 72.8899 404.168 72.8899C391.198 72.8899 380.808 77.1499 373.008 85.6599C365.208 94.1699 361.308 106.54 361.308 122.75V204.53H329.998V204.52Z"
+                    fill="currentColor"
+                  />
+                  <path d="M1078.41 204.59V0.290039H1109.72V204.59H1078.41Z" fill="currentColor" />
+                  <path
+                    d="M1217.24 204.591C1202.24 204.591 1188.92 201.501 1177.26 195.321C1165.6 189.141 1156.44 180.271 1149.75 168.721C1143.06 157.171 1139.72 143.491 1139.72 127.681V123.121C1139.72 107.311 1143.06 93.6814 1149.75 82.2314C1156.44 70.7814 1165.61 61.9114 1177.26 55.6314C1188.91 49.3514 1202.24 46.2114 1217.24 46.2114C1232.24 46.2114 1245.61 49.3514 1257.37 55.6314C1269.12 61.9114 1278.35 70.7814 1285.03 82.2314C1291.72 93.6814 1295.06 107.311 1295.06 123.121V127.681C1295.06 143.491 1291.72 157.171 1285.03 168.721C1278.34 180.271 1269.12 189.141 1257.37 195.321C1245.61 201.501 1232.24 204.591 1217.24 204.591ZM1217.24 176.621C1231.02 176.621 1242.22 172.211 1250.83 163.401C1259.44 154.581 1263.75 142.381 1263.75 126.771V124.031C1263.75 108.431 1259.49 96.2114 1250.98 87.4014C1242.47 78.5814 1231.22 74.1814 1217.24 74.1814C1203.26 74.1814 1192.56 78.5914 1183.95 87.4014C1175.33 96.2214 1171.03 108.431 1171.03 124.031V126.771C1171.03 142.381 1175.33 154.591 1183.95 163.401C1192.56 172.221 1203.66 176.621 1217.24 176.621Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M1337.36 178.281L1316.07 46.2112H1347.38L1366.23 183.621H1371.09L1392.5 71.1212C1395.25 56.6712 1407.88 46.2112 1422.6 46.2112C1437.34 46.2112 1449.98 56.7012 1452.71 71.1812L1473.85 183.611H1478.71L1497.56 46.2012H1528.87L1507.58 178.271C1505.14 193.431 1492.05 204.581 1476.69 204.581C1461.64 204.581 1448.73 193.871 1445.94 179.091L1424.91 67.4812H1420.05L1399.02 179.091C1396.23 193.881 1383.32 204.581 1368.27 204.581C1352.91 204.581 1339.82 193.431 1337.38 178.271L1337.36 178.281Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M980.178 8.76881C974.778 14.2588 972.088 21.5888 972.088 30.7388V204.589H1003.52V72.8288H1048.41V46.2788H1026.71L1009.01 63.9788H1003.52V35.9288C1003.52 29.8288 1006.46 26.7788 1012.37 26.7788H1048.29V0.528809H1002.3C992.928 0.528809 985.558 3.27881 980.178 8.76881Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M898.579 168.529V85.2891H867.139V174.019C867.139 183.179 869.829 190.499 875.229 195.999C880.619 201.489 887.899 204.239 897.059 204.239H938.569V177.679H907.129C901.419 177.679 898.579 174.629 898.579 168.519V168.529Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M709.996 161.601C701.296 171.981 688.456 177.051 674.926 177.051H579.566C566.946 177.051 556.416 173.131 547.976 165.301C547.456 164.811 546.937 164.321 546.447 163.801C545.947 163.281 545.466 162.761 544.996 162.241C543.866 160.941 542.826 159.581 541.866 158.161C537.756 151.991 535.406 144.651 534.816 136.151C534.756 135.341 534.727 134.521 534.697 133.691H650.387V121.791C650.387 106.531 647.336 93.2012 641.226 81.8012C635.116 70.4012 626.616 61.5012 615.736 55.0912C604.836 48.6812 592.166 45.4712 577.736 45.4712C563.306 45.4712 549.856 48.7212 538.666 55.2412C533.066 58.4912 528.076 62.3812 523.676 66.9212C523.126 67.4812 522.576 68.0612 522.046 68.6512C520.446 70.4212 518.947 72.2712 517.517 74.1912C515.627 76.7712 513.867 79.5212 512.267 82.4212C505.857 94.0212 502.646 107.651 502.646 123.321V126.981C502.646 142.651 505.857 156.281 512.267 167.881C518.677 179.481 527.576 188.481 538.976 194.891C550.366 201.301 563.706 204.511 578.966 204.511H672.346C680.876 204.511 698.716 202.971 709.296 197.051C721.036 190.471 728.296 182.501 740.216 168.291L744.746 161.811L727.556 137.421L710.007 161.601H709.996ZM534.996 109.591C535.306 107.501 535.696 105.481 536.216 103.551C536.716 101.611 537.326 99.7612 538.046 97.9912C540.416 92.1012 543.937 87.1112 548.577 83.0312C555.997 76.5112 565.606 73.2612 577.426 73.2612C589.246 73.2612 598.796 76.5112 606.116 83.0312C613.446 89.5512 617.607 98.4012 618.637 109.591H555.757L539.686 125.661H534.387C534.307 121.041 534.386 115.081 534.996 109.591Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M898.582 45.76V0H867.142V45.76H837.572C829.042 45.76 811.202 47.3 800.622 53.22C788.882 59.8 779.352 68.27 767.432 82.48L754.272 100.61C748.752 92.65 744.302 86.24 742.212 83.29C731.482 68.16 721.042 60.31 709.292 53.73C698.712 47.8 681.872 46.27 673.342 46.27H667.482V73.74H675.932C689.472 73.74 701.302 78.81 710.002 89.19L735.712 126.17L735.602 126.32L751.322 148.63L764.642 167.79C776.562 182 786.092 190.47 797.832 197.05C808.412 202.98 826.252 204.51 834.782 204.51H840.642V177.04H832.192C818.652 177.04 805.522 172.21 797.122 161.59C793.892 157.51 782.522 141.28 770.842 124.49L795.902 88.67C804.602 78.29 821.442 72.31 834.972 72.31H942.092V45.75H898.582V45.76Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </a>
+            </div>
+            <div class="footer-row">
+              <span>Documentation generated by</span>
+              <a href="https://github.com/ewels/nf-docs" target="_blank" rel="noopener noreferrer"
+                >nf-docs</a
+              >
+              <span class="nf-docs-version">v0.3.0</span>
+              <span>on 2026-05-27 21:57:44 UTC</span>
+            </div>
+          </div>
+        </footer>
+      </main>
+
+      
+      <!-- Right Sidebar - Page Table of Contents -->
+      <aside
+        id="right-nav"
+        class="w-64 bg-white border-l border-slate-200 p-4 fixed right-0 top-14 h-[calc(100vh-3.5rem)] overflow-y-auto hidden lg:block"
+      >
+        <div class="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">
+          On This Page
+        </div>
+
+        <!-- Overview TOC (empty - no sub-items) -->
+        <nav id="toc-overview" class="toc-section"></nav>
+
+        <!-- Inputs TOC -->
+        
+        <nav id="toc-inputs" class="toc-section hidden">
+          
+          <div class="mb-3">
+            <div
+              class="font-semibold text-sm text-slate-700 mb-1 toc-group-header cursor-pointer hover:text-primary"
+              data-group="main-workflow-parameters"
+            >
+              Main workflow parameters
+            </div>
+            <ul
+              class="toc-group-items space-y-0.5 text-xs"
+              data-group="main-workflow-parameters"
+            >
+              
+              <li>
+                <a
+                  href="#param-input"
+                  class="toc-link block px-2 py-0.5 rounded text-slate-600 hover:bg-slate-100 hover:text-slate-900 truncate"
+                  data-section="inputs"
+                  title="input"
+                  >input</a
+                >
+              </li>
+              
+            </ul>
+          </div>
+          
+        </nav>
+        
+
+        <!-- Config TOC -->
+        
+
+        <!-- Workflows TOC -->
+        
+        <nav id="toc-workflows" class="toc-section hidden">
+          <ul class="space-y-0.5 text-xs">
+            
+            <li>
+              <a
+                href="#workflow-entry"
+                class="toc-link block px-2 py-0.5 rounded text-slate-600 hover:bg-slate-100 hover:text-slate-900 truncate"
+                data-section="workflows"
+                title="(entry)"
+                >(entry)</a
+              >
+            </li>
+            
+          </ul>
+        </nav>
+        
+
+        <!-- Processes TOC -->
+        
+        <nav id="toc-processes" class="toc-section hidden">
+          <ul class="space-y-0.5 text-xs">
+            
+            <li>
+              <a
+                href="#process-AGGREGATE_SV_PILEUP"
+                class="toc-link block px-2 py-0.5 rounded text-slate-600 hover:bg-slate-100 hover:text-slate-900 truncate"
+                data-section="processes"
+                title="AGGREGATE_SV_PILEUP"
+                >AGGREGATE_SV_PILEUP</a
+              >
+            </li>
+            
+            <li>
+              <a
+                href="#process-AGGREGATE_SV_PILEUP_TO_BEDPE"
+                class="toc-link block px-2 py-0.5 rounded text-slate-600 hover:bg-slate-100 hover:text-slate-900 truncate"
+                data-section="processes"
+                title="AGGREGATE_SV_PILEUP_TO_BEDPE"
+                >AGGREGATE_SV_PILEUP_TO_BEDPE</a
+              >
+            </li>
+            
+            <li>
+              <a
+                href="#process-COORDINATE_SORT"
+                class="toc-link block px-2 py-0.5 rounded text-slate-600 hover:bg-slate-100 hover:text-slate-900 truncate"
+                data-section="processes"
+                title="COORDINATE_SORT"
+                >COORDINATE_SORT</a
+              >
+            </li>
+            
+            <li>
+              <a
+                href="#process-SV_PILEUP"
+                class="toc-link block px-2 py-0.5 rounded text-slate-600 hover:bg-slate-100 hover:text-slate-900 truncate"
+                data-section="processes"
+                title="SV_PILEUP"
+                >SV_PILEUP</a
+              >
+            </li>
+            
+          </ul>
+        </nav>
+        
+
+        <!-- Functions TOC -->
+        
+      </aside>
+      
+    </div>
+
+    <script>
+      
+      // Track current section
+      let currentSection = 'overview';
+
+      // Show the appropriate TOC for the current section
+      function updateTOC(sectionId) {
+        document.querySelectorAll('.toc-section').forEach(toc => toc.classList.add('hidden'));
+        const tocSection = document.getElementById('toc-' + sectionId);
+        if (tocSection) {
+          tocSection.classList.remove('hidden');
+        }
+        currentSection = sectionId;
+      }
+
+      // Clear search state (input and URL)
+      function clearSearch() {
+        searchInput.value = '';
+        searchClear.classList.add('hidden');
+        const url = new URL(window.location);
+        url.searchParams.delete('search');
+        return url.pathname;
+      }
+
+      // Main navigation
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+
+          // Clear search
+          const basePath = clearSearch();
+
+          // Update active nav link styling
+          document.querySelectorAll('.nav-link').forEach(l => {
+            l.classList.remove('bg-primary', 'text-white');
+            l.classList.add('text-slate-800');
+          });
+          link.classList.add('bg-primary', 'text-white');
+          link.classList.remove('text-slate-800');
+
+          // Show corresponding section
+          const sectionId = link.dataset.section;
+          document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+          document.getElementById(sectionId).classList.remove('hidden');
+
+          // Update right-hand TOC
+          updateTOC(sectionId);
+          currentSection = sectionId;
+
+          // Update URL hash for deep linking (without search params)
+          history.pushState(null, null, basePath + '#' + sectionId);
+
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+
+      // Top nav home link (pipeline name)
+      document.getElementById('top-nav-home').addEventListener('click', e => {
+        e.preventDefault();
+
+        // Clear search
+        const basePath = clearSearch();
+
+        // Update active nav link styling
+        document.querySelectorAll('.nav-link').forEach(l => {
+          l.classList.remove('bg-primary', 'text-white');
+          l.classList.add('text-slate-800');
+          if (l.dataset.section === 'overview') {
+            l.classList.add('bg-primary', 'text-white');
+            l.classList.remove('text-slate-800');
+          }
+        });
+
+        // Show overview section
+        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('overview').classList.remove('hidden');
+
+        // Update right-hand TOC
+        updateTOC('overview');
+        currentSection = 'overview';
+
+        // Update URL
+        history.pushState(null, null, basePath + '#overview');
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // TOC link navigation
+      document.querySelectorAll('.toc-link').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+
+          // Clear search
+          const basePath = clearSearch();
+
+          const href = link.getAttribute('href');
+          // Escape special CSS selector characters in the ID
+          const escapedHref = href.replace(/\./g, '\\.');
+          const target = document.querySelector(escapedHref);
+          if (target) {
+            // Make sure the right section is visible
+            const sectionId = link.dataset.section;
+            if (currentSection !== sectionId) {
+              document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+              document.getElementById(sectionId).classList.remove('hidden');
+              updateTOC(sectionId);
+              currentSection = sectionId;
+
+              // Update left nav highlighting
+              document.querySelectorAll('.nav-link').forEach(l => {
+                l.classList.remove('bg-primary', 'text-white');
+                l.classList.add('text-slate-800');
+                if (l.dataset.section === sectionId) {
+                  l.classList.add('bg-primary', 'text-white');
+                  l.classList.remove('text-slate-800');
+                }
+              });
+            }
+            setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 50);
+
+            // Update URL hash (without search params)
+            history.pushState(null, null, basePath + href);
+          }
+        });
+      });
+
+      // TOC group header click to toggle collapse (only for inputs section)
+      document.querySelectorAll('.toc-group-header').forEach(header => {
+        header.addEventListener('click', e => {
+          const group = header.dataset.group;
+          const items = document.querySelector(`.toc-group-items[data-group="${group}"]`);
+          if (items) {
+            items.classList.toggle('hidden');
+            header.classList.toggle('text-slate-400');
+          }
+        });
+      });
+
+      // Handle direct hash navigation
+      if (window.location.hash) {
+        const hash = window.location.hash;
+        // Escape special CSS selector characters in the ID
+        const escapedHash = hash.replace(/\./g, '\\.');
+        const target = document.querySelector(escapedHash);
+        if (target) {
+          // Find which section contains this target (or if target IS a section)
+          let section = target.classList.contains('section') ? target : target.closest('.section');
+          if (section) {
+            const sectionId = section.id;
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            section.classList.remove('hidden');
+            updateTOC(sectionId);
+
+            // Update left nav highlighting
+            document.querySelectorAll('.nav-link').forEach(l => {
+              l.classList.remove('bg-primary', 'text-white');
+              l.classList.add('text-slate-800');
+              if (l.dataset.section === sectionId) {
+                l.classList.add('bg-primary', 'text-white');
+                l.classList.remove('text-slate-800');
+              }
+            });
+
+            // Scroll to target (for item-level links) or top (for section links)
+            if (target === section) {
+              window.scrollTo({ top: 0 });
+            } else {
+              setTimeout(() => target.scrollIntoView(), 100);
+            }
+          }
+        }
+      }
+
+      // Initialize TOC for overview (default section)
+      updateTOC('overview');
+
+      // ==================== Overview TOC Generation ====================
+
+      // Populate overview TOC from readme headings
+      function populateOverviewTOC() {
+        const readmeContent = document.getElementById('readme-content');
+        const tocOverview = document.getElementById('toc-overview');
+
+        if (!readmeContent || !tocOverview) return;
+
+        const headings = readmeContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+        if (headings.length === 0) return;
+
+        const ul = document.createElement('ul');
+        ul.className = 'space-y-0.5 text-xs';
+
+        headings.forEach(heading => {
+          const id = heading.id;
+          const text = heading.textContent.replace('¶', '').trim();
+          const level = parseInt(heading.tagName.charAt(1));
+
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = '#' + id;
+          a.className = 'toc-link block px-2 py-0.5 rounded text-slate-600 hover:bg-slate-100 hover:text-slate-900 truncate';
+          a.dataset.section = 'overview';
+          a.title = text;
+          a.textContent = text;
+
+          // Add indentation for nested headings (h2 and below)
+          if (level > 1) {
+            a.style.paddingLeft = ((level - 1) * 0.75 + 0.5) + 'rem';
+          }
+
+          li.appendChild(a);
+          ul.appendChild(li);
+
+          // Add click handler for smooth scrolling
+          a.addEventListener('click', e => {
+            e.preventDefault();
+            const target = document.getElementById(id);
+            if (target) {
+              // Make sure overview section is visible
+              if (currentSection !== 'overview') {
+                document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+                document.getElementById('overview').classList.remove('hidden');
+                updateTOC('overview');
+                currentSection = 'overview';
+
+                // Update left nav highlighting
+                document.querySelectorAll('.nav-link').forEach(l => {
+                  l.classList.remove('bg-primary', 'text-white');
+                  l.classList.add('text-slate-800');
+                  if (l.dataset.section === 'overview') {
+                    l.classList.add('bg-primary', 'text-white');
+                    l.classList.remove('text-slate-800');
+                  }
+                });
+              }
+              setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 50);
+              history.pushState(null, null, '#' + id);
+            }
+          });
+        });
+
+        tocOverview.appendChild(ul);
+      }
+
+      // Call on page load
+      populateOverviewTOC();
+
+      // ==================== Search Functionality ====================
+
+      // Build search index from page content
+      const searchIndex = {
+        workflows: [
+          
+          {
+            name: "(entry)",
+            docstring: "Detect structural-variant breakpoints from aligned reads using fgsv.\nThe `--input` sample sheet provides one `sample` identifier and `bam` path per\nrow (see the `--input` parameter for the full column specification). Every\nper-sample output \u2014 the sorted BAM, SvPileup BAM and text, aggregated\nbreakpoints, and BEDPE \u2014 is published via the `sample_outputs` topic into a\ndirectory named after the sample\u0027s `meta.id`. For each sample the workflow runs:\n1. `COORDINATE_SORT` \u2014 coordinate-sort the input BAM with samtools.\n2. `SV_PILEUP` \u2014 gather read-level evidence for structural variants (fgsv SvPileup).\n3. `AGGREGATE_SV_PILEUP` \u2014 merge pileups that likely support the same breakpoint.\n4. `AGGREGATE_SV_PILEUP_TO_BEDPE` \u2014 convert the aggregated breakpoints to BEDPE.",
+            file: "main.nf",
+            id: "workflow-entry",
+            section: "workflows"
+          }
+          
+        ],
+        processes: [
+          
+          {
+            name: "AGGREGATE_SV_PILEUP",
+            docstring: "Aggregate and merge pileups that are likely to support the same breakpoint\nusing fgsv AggregateSvPileup.",
+            file: "modules/aggregate_sv_pileup.nf",
+            id: "process-AGGREGATE_SV_PILEUP",
+            section: "processes"
+          },
+          
+          {
+            name: "AGGREGATE_SV_PILEUP_TO_BEDPE",
+            docstring: "Convert aggregated SvPileup output to BEDPE format using fgsv\nAggregateSvPileupToBedPE.",
+            file: "modules/aggregate_sv_pileup_to_bedpe.nf",
+            id: "process-AGGREGATE_SV_PILEUP_TO_BEDPE",
+            section: "processes"
+          },
+          
+          {
+            name: "COORDINATE_SORT",
+            docstring: "Sort a BAM file by genomic coordinates using samtools sort.",
+            file: "modules/coordinate_sort.nf",
+            id: "process-COORDINATE_SORT",
+            section: "processes"
+          },
+          
+          {
+            name: "SV_PILEUP",
+            docstring: "Detect structural variant evidence from a BAM file using fgsv SvPileup.",
+            file: "modules/sv_pileup.nf",
+            id: "process-SV_PILEUP",
+            section: "processes"
+          }
+          
+        ],
+        functions: [
+          
+        ],
+        inputs: [
+          
+          {
+            name: "input",
+            description: "Path to a tab-separated values (TSV) sample sheet describing the samples to analyze. The file must have a header row with the following required columns:\n\n- `sample`: a unique sample identifier containing no whitespace; used as the `meta.id` that names per-sample outputs.\n- `bam`: path to an existing BAM file for the sample (must end in `.bam`).\n\nSee `schemas/input_schema.json` for the full validation rules.",
+            group: "Main workflow parameters",
+            id: "param-input",
+            section: "inputs"
+          }
+          
+        ],
+        config: [
+          
+        ]
+      };
+
+      const searchInput = document.getElementById('search-input');
+      const searchClear = document.getElementById('search-clear');
+      const searchResultsSection = document.getElementById('search-results');
+      const searchResultsContent = document.getElementById('search-results-content');
+      const searchNoResults = document.getElementById('search-no-results');
+      const searchQueryDisplay = document.getElementById('search-query-display');
+      const searchQueryWrapper = document.getElementById('search-query-wrapper');
+      const searchEmptyState = document.getElementById('search-empty-state');
+
+      // Debounce function
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      // Highlight matching text
+      function highlightText(text, query) {
+        if (!text || !query) return text || '';
+        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(regex, '<span class="search-highlight">$1</span>');
+      }
+
+      // Search function
+      function performSearch(query) {
+        if (!query || query.length < 2) {
+          // If we're on the search results page, stay there but show empty state
+          if (currentSection === 'search-results' || !searchResultsSection.classList.contains('hidden')) {
+            searchResultsContent.innerHTML = '';
+            searchNoResults.classList.add('hidden');
+            searchQueryWrapper.classList.add('hidden');
+            searchEmptyState.classList.remove('hidden');
+            searchClear.classList.add('hidden');
+            // Update URL to remove search param
+            const url = new URL(window.location);
+            url.searchParams.delete('search');
+            history.replaceState(null, null, url.pathname + url.hash);
+            return;
+          }
+          // Otherwise, show previous section
+          searchResultsSection.classList.add('hidden');
+          if (currentSection && currentSection !== 'search-results') {
+            document.getElementById(currentSection).classList.remove('hidden');
+          } else {
+            document.getElementById('overview').classList.remove('hidden');
+            currentSection = 'overview';
+            updateTOC('overview');
+          }
+          searchClear.classList.add('hidden');
+          // Update URL to remove search param
+          const url = new URL(window.location);
+          url.searchParams.delete('search');
+          history.replaceState(null, null, url.pathname + url.hash);
+          return;
+        }
+
+        searchClear.classList.remove('hidden');
+        searchEmptyState.classList.add('hidden');
+        searchQueryWrapper.classList.remove('hidden');
+        const lowerQuery = query.toLowerCase();
+        const results = {
+          workflows: [],
+          processes: [],
+          functions: [],
+          inputs: [],
+          config: []
+        };
+
+        // Search each category
+        for (const [category, items] of Object.entries(searchIndex)) {
+          for (const item of items) {
+            const nameMatch = item.name.toLowerCase().includes(lowerQuery);
+            const docMatch = (item.docstring || item.description || '').toLowerCase().includes(lowerQuery);
+            const fileMatch = (item.file || '').toLowerCase().includes(lowerQuery);
+
+            if (nameMatch || docMatch || fileMatch) {
+              results[category].push({
+                ...item,
+                nameMatch,
+                docMatch,
+                fileMatch
+              });
+            }
+          }
+        }
+
+        // Update URL with search param
+        const url = new URL(window.location);
+        url.searchParams.set('search', query);
+        history.replaceState(null, null, url.pathname + '?' + url.searchParams.toString());
+
+        // Render results
+        renderSearchResults(results, query);
+      }
+
+      // Render search results
+      function renderSearchResults(results, query) {
+        const totalResults = Object.values(results).reduce((sum, arr) => sum + arr.length, 0);
+
+        searchQueryDisplay.textContent = query;
+
+        // Hide all other sections and show search results
+        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+        searchResultsSection.classList.remove('hidden');
+
+        // Clear left nav highlighting
+        document.querySelectorAll('.nav-link').forEach(l => {
+          l.classList.remove('bg-primary', 'text-white');
+          l.classList.add('text-slate-800');
+        });
+
+        // Hide right TOC
+        document.querySelectorAll('.toc-section').forEach(toc => toc.classList.add('hidden'));
+
+        if (totalResults === 0) {
+          searchResultsContent.innerHTML = '';
+          searchNoResults.classList.remove('hidden');
+          return;
+        }
+
+        searchNoResults.classList.add('hidden');
+
+        const categoryLabels = {
+          workflows: 'Workflows',
+          processes: 'Processes',
+          functions: 'Functions',
+          inputs: 'Parameters',
+          config: 'Configuration'
+        };
+
+        const categoryIcons = {
+          workflows: 'workflow',
+          processes: 'process',
+          functions: 'def',
+          inputs: '--',
+          config: ''
+        };
+
+        let html = '';
+
+        for (const [category, items] of Object.entries(results)) {
+          if (items.length === 0) continue;
+
+          html += `
+            <div class="mb-8">
+              <h2 class="text-xl font-semibold mb-4 pb-2 border-b border-slate-200">
+                ${categoryLabels[category]}
+                <span class="text-sm font-normal text-slate-500 ml-2">(${items.length})</span>
+              </h2>
+              <div class="space-y-3">
+          `;
+
+          for (const item of items) {
+            const escapedId = item.id.replace(/\./g, '\\.');
+            const icon = categoryIcons[category];
+            const description = item.docstring || item.description || '';
+            const truncatedDesc = description.length > 200 ? description.substring(0, 200) + '...' : description;
+
+            html += `
+              <div class="bg-white border border-slate-200 rounded-lg p-4 hover:border-primary transition-colors">
+                <a href="#${item.id}" class="search-result-link block" data-section="${item.section}" data-id="${item.id}">
+                  <div class="font-mono text-sm mb-1">
+                    ${icon ? `<span class="text-slate-500 italic">${icon}</span> ` : ''}
+                    <span class="font-bold text-primary-dark">${highlightText(item.name, query)}</span>
+                  </div>
+                  ${truncatedDesc ? `<p class="text-sm text-slate-600">${highlightText(truncatedDesc, query)}</p>` : ''}
+                  ${item.file ? `<p class="text-xs text-slate-400 mt-1">${highlightText(item.file, query)}</p>` : ''}
+                </a>
+              </div>
+            `;
+          }
+
+          html += `
+              </div>
+            </div>
+          `;
+        }
+
+        searchResultsContent.innerHTML = html;
+
+        // Add click handlers to search result links
+        document.querySelectorAll('.search-result-link').forEach(link => {
+          link.addEventListener('click', e => {
+            e.preventDefault();
+            const section = link.dataset.section;
+            const id = link.dataset.id;
+            const escapedId = id.replace(/\./g, '\\.');
+
+            // Clear search (input and URL)
+            const basePath = clearSearch();
+
+            // Show the target section
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(section).classList.remove('hidden');
+            currentSection = section;
+            updateTOC(section);
+
+            // Update left nav
+            document.querySelectorAll('.nav-link').forEach(l => {
+              l.classList.remove('bg-primary', 'text-white');
+              l.classList.add('text-slate-800');
+              if (l.dataset.section === section) {
+                l.classList.add('bg-primary', 'text-white');
+                l.classList.remove('text-slate-800');
+              }
+            });
+
+            // Scroll to the item
+            const target = document.querySelector('#' + escapedId);
+            if (target) {
+              setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 50);
+            }
+
+            // Update URL (without search params)
+            history.pushState(null, null, basePath + '#' + id);
+          });
+        });
+      }
+
+      // Debounced search
+      const debouncedSearch = debounce(performSearch, 300);
+
+      // Search input event
+      searchInput.addEventListener('input', e => {
+        debouncedSearch(e.target.value.trim());
+      });
+
+      // Clear search button
+      searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        performSearch('');
+        searchInput.focus();
+      });
+
+      // Handle search query in URL on page load
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchQuery = urlParams.get('search');
+      if (searchQuery) {
+        searchInput.value = searchQuery;
+        performSearch(searchQuery);
+      }
+
+      // Keyboard shortcut: focus search with /
+      document.addEventListener('keydown', e => {
+        if (e.key === '/' && document.activeElement !== searchInput) {
+          e.preventDefault();
+          searchInput.focus();
+        }
+        // Escape to clear search
+        if (e.key === 'Escape' && document.activeElement === searchInput) {
+          searchInput.value = '';
+          performSearch('');
+          searchInput.blur();
+        }
+      });
+
+      // ==================== Mobile Menu ====================
+
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+      const mobileMenuClose = document.getElementById('mobile-menu-close');
+      const mobileSearchLink = document.getElementById('mobile-search-link');
+      const mobileSearchInput = document.getElementById('mobile-search-input');
+      const mobileSearchClear = document.getElementById('mobile-search-clear');
+
+      function openMobileMenu() {
+        mobileMenu.classList.remove('-translate-x-full');
+        mobileMenuOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMobileMenu() {
+        mobileMenu.classList.add('-translate-x-full');
+        mobileMenuOverlay.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      mobileMenuBtn.addEventListener('click', openMobileMenu);
+      mobileMenuClose.addEventListener('click', closeMobileMenu);
+      mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+      // Mobile search link - navigate to search results page and focus input
+      mobileSearchLink.addEventListener('click', e => {
+        e.preventDefault();
+        closeMobileMenu();
+
+        // Show search results section
+        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('search-results').classList.remove('hidden');
+        currentSection = 'search-results';
+
+        // Update nav state
+        document.querySelectorAll('.nav-link').forEach(l => {
+          l.classList.remove('bg-primary', 'text-white');
+          l.classList.add('text-slate-800');
+        });
+
+        // Focus mobile search input after a short delay
+        setTimeout(() => mobileSearchInput.focus(), 100);
+      });
+
+      // Close mobile menu when a nav link is clicked
+      document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          closeMobileMenu();
+          // Also handle section navigation
+          const section = link.dataset.section;
+          if (section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(section).classList.remove('hidden');
+            currentSection = section;
+            updateTOC(section);
+
+            // Update desktop nav as well
+            document.querySelectorAll('.nav-link').forEach(l => {
+              l.classList.remove('bg-primary', 'text-white');
+              l.classList.add('text-slate-800');
+              if (l.dataset.section === section) {
+                l.classList.add('bg-primary', 'text-white');
+                l.classList.remove('text-slate-800');
+              }
+            });
+          }
+        });
+      });
+
+      // Mobile search input on search results page
+      mobileSearchInput.addEventListener('input', e => {
+        searchInput.value = e.target.value;
+        debouncedSearch(e.target.value.trim());
+        mobileSearchClear.classList.toggle('hidden', !e.target.value);
+      });
+
+      // Sync desktop search to mobile
+      searchInput.addEventListener('input', e => {
+        mobileSearchInput.value = e.target.value;
+        mobileSearchClear.classList.toggle('hidden', !e.target.value);
+      });
+
+      mobileSearchClear.addEventListener('click', () => {
+        mobileSearchInput.value = '';
+        searchInput.value = '';
+        mobileSearchClear.classList.add('hidden');
+        searchClear.classList.add('hidden');
+        // Clear results but stay on search page with empty state
+        searchResultsContent.innerHTML = '';
+        searchNoResults.classList.add('hidden');
+        searchQueryWrapper.classList.add('hidden');
+        searchEmptyState.classList.remove('hidden');
+        // Update URL to remove search param
+        const url = new URL(window.location);
+        url.searchParams.delete('search');
+        history.replaceState(null, null, url.pathname + url.hash);
+      });
+
+      // Close mobile menu on escape key
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !mobileMenu.classList.contains('-translate-x-full')) {
+          closeMobileMenu();
+        }
+      });
+
+      // ==================== Mobile Table of Contents ====================
+
+      const mobileTocLink = document.getElementById('mobile-toc-link');
+      const mobileTocBack = document.getElementById('mobile-toc-back');
+      const mobileMainNav = document.getElementById('mobile-main-nav');
+      const mobileTocNav = document.getElementById('mobile-toc-nav');
+      const mobileTocContent = document.getElementById('mobile-toc-content');
+
+      // Populate mobile ToC based on current section
+      function populateMobileToc() {
+        mobileTocContent.innerHTML = '';
+
+        // Get the current active ToC section from the right sidebar
+        const activeTocSection = document.querySelector('.toc-section:not(.hidden)');
+
+        if (!activeTocSection || activeTocSection.children.length === 0) {
+          // No ToC content for this section
+          mobileTocContent.innerHTML = '<p class="text-slate-500 text-sm px-2">No table of contents available for this section.</p>';
+          return;
+        }
+
+        // Clone the ToC content
+        const clonedContent = activeTocSection.cloneNode(true);
+        clonedContent.classList.remove('hidden', 'toc-section');
+        clonedContent.removeAttribute('id');
+
+        // Update classes for mobile styling
+        clonedContent.querySelectorAll('.toc-link').forEach(link => {
+          link.classList.remove('toc-link');
+          link.classList.add('mobile-toc-link', 'block', 'px-3', 'py-2', 'rounded', 'text-slate-600', 'hover:bg-slate-100', 'hover:text-slate-900', 'transition-colors');
+
+          // Add click handler
+          link.addEventListener('click', e => {
+            e.preventDefault();
+            const href = link.getAttribute('href');
+            const escapedHref = href.replace(/\./g, '\\.');
+            const target = document.querySelector(escapedHref);
+
+            if (target) {
+              closeMobileMenu();
+              setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+              history.pushState(null, null, href);
+            }
+          });
+        });
+
+        // Update group headers for mobile
+        clonedContent.querySelectorAll('.toc-group-header').forEach(header => {
+          header.classList.add('mobile-toc-group-header', 'font-semibold', 'text-sm', 'text-slate-700', 'mb-1', 'px-3', 'py-1');
+        });
+
+        // Update spacing
+        clonedContent.querySelectorAll('ul').forEach(ul => {
+          ul.classList.add('space-y-1', 'text-sm');
+        });
+
+        mobileTocContent.appendChild(clonedContent);
+      }
+
+      // Show mobile ToC
+      function showMobileToc() {
+        populateMobileToc();
+        mobileMainNav.classList.add('hidden');
+        mobileTocNav.classList.remove('hidden');
+      }
+
+      // Show mobile main nav
+      function showMobileMainNav() {
+        mobileTocNav.classList.add('hidden');
+        mobileMainNav.classList.remove('hidden');
+      }
+
+      mobileTocLink.addEventListener('click', showMobileToc);
+      mobileTocBack.addEventListener('click', showMobileMainNav);
+      
+
+      // ==================== Dark Mode Toggle ====================
+
+      const THEME_STORAGE_KEY = 'nf-docs-theme';
+      const themeToggle = document.getElementById('theme-toggle');
+
+      // Get the current theme (from localStorage or system preference)
+      function getCurrentTheme() {
+        const stored = localStorage.getItem(THEME_STORAGE_KEY);
+        if (stored) {
+          return stored;
+        }
+        // Auto-detect from OS preference
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+
+      // Apply theme to the document
+      function applyTheme(theme) {
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+
+      // Toggle theme and save to localStorage
+      function toggleTheme() {
+        const current = getCurrentTheme();
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+        applyTheme(newTheme);
+      }
+
+      // Theme toggle button click handler
+      themeToggle.addEventListener('click', toggleTheme);
+
+      // Listen for OS theme changes (only if user hasn't set a preference)
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        const stored = localStorage.getItem(THEME_STORAGE_KEY);
+        if (!stored) {
+          // User hasn't set a preference, follow OS
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+
+      // Listen for storage changes from other tabs/windows
+      window.addEventListener('storage', e => {
+        if (e.key === THEME_STORAGE_KEY) {
+          if (e.newValue) {
+            applyTheme(e.newValue);
+          } else {
+            // Storage was cleared, revert to OS preference
+            const osTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            applyTheme(osTheme);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
