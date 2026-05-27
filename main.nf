@@ -18,6 +18,20 @@ params {
     input: String
 }
 
+/**
+ * Detect structural-variant breakpoints from aligned reads using fgsv.
+ *
+ * The `--input` sample sheet provides one `sample` identifier and `bam` path per
+ * row (see the `--input` parameter for the full column specification). Every
+ * per-sample output — the sorted BAM, SvPileup BAM and text, aggregated
+ * breakpoints, and BEDPE — is published via the `sample_outputs` topic into a
+ * directory named after the sample's `meta.id`. For each sample the workflow runs:
+ *
+ * 1. `COORDINATE_SORT` — coordinate-sort the input BAM with samtools.
+ * 2. `SV_PILEUP` — gather read-level evidence for structural variants (fgsv SvPileup).
+ * 3. `AGGREGATE_SV_PILEUP` — merge pileups that likely support the same breakpoint.
+ * 4. `AGGREGATE_SV_PILEUP_TO_BEDPE` — convert the aggregated breakpoints to BEDPE.
+ */
 workflow {
     main:
     validateParameters()

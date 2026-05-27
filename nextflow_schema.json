@@ -14,7 +14,7 @@
       "properties": {
         "input": {
           "type": "string",
-          "description": "Path to tab-separated file containing information about the samples in the experiment.",
+          "description": "Path to a tab-separated values (TSV) sample sheet describing the samples to analyze. The file must have a header row with the following required columns:\n\n- `sample`: a unique sample identifier containing no whitespace; used as the `meta.id` that names per-sample outputs.\n- `bam`: path to an existing BAM file for the sample (must end in `.bam`).\n\nSee `schemas/input_schema.json` for the full validation rules.",
           "format": "file-path",
           "pattern": ".*.tsv$",
           "exists": true,
