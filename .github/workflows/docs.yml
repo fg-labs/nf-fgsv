@@ -65,8 +65,10 @@ jobs:
       group: docs-preview-${{ github.event.number }}
       cancel-in-progress: true
     steps:
+      # Always check out so the pr-preview-action has a git working directory,
+      # including on `closed` events where it tears the preview down. The build
+      # steps below are skipped on close since there's nothing to rebuild.
       - name: Checkout
-        if: github.event.action != 'closed'
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           persist-credentials: false
