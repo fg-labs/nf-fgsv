@@ -30,8 +30,15 @@ pytest = ">=8.3.5,<9"
 pytest-workflow = ">=2.1.0,<3"
 
 [feature.dev.dependencies]
-# nf-docs (from bioconda) auto-generates the workflow documentation.
-nf-docs = ">=0.3.0"
+# Python provides the interpreter that nf-docs (installed below from a git fork)
+# runs on.
+python = ">=3.12.10,<3.13"
+
+[feature.dev.pypi-dependencies]
+# nf-docs auto-generates the workflow documentation. Pinned to znorgaard's fork
+# branch, which adds rendering support for Record-typed process outputs (not yet
+# in the upstream bioconda release).
+nf-docs = { git = "https://github.com/znorgaard/nf-docs.git", branch = "feat/typed-process-outputs" }
 
 [environments]
 default = { features = ["nextflow", "pytest_workflow", "dev"] }
