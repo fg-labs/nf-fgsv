@@ -13,11 +13,6 @@ include { AGGREGATE_SV_PILEUP_TO_BEDPE } from './modules/aggregate_sv_pileup_to_
 include { COORDINATE_SORT } from './modules/coordinate_sort.nf'
 include { SV_PILEUP } from './modules/sv_pileup.nf'
 
-params {
-    // Path to tab-separated file containing information about the samples in the experiment.
-    input: String
-}
-
 /**
  * Detect structural-variant breakpoints from aligned reads using fgsv.
  *
@@ -34,17 +29,25 @@ params {
  */
 workflow {
     main:
-    validateParameters()
-    log.info paramsSummaryLog(workflow)
+    if( params.help || params.helpFull ) {
+        log.info paramsHelp(
+            [fullHelp: params.helpFull as Boolean, showHidden: params.showHidden as Boolean],
+            params.help in [true, 'true'] ? '' : params.help as String
+        )
+    }
+    else {
+        validateParameters()
+        log.info paramsSummaryLog(workflow)
 
-    ch_samples = channel
-        .fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
-        .map { meta, bam -> record(meta: meta, bam: bam) }
+        ch_samples = channel
+            .fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
+            .map { meta, bam -> record(meta: meta, bam: bam) }
 
-    COORDINATE_SORT(ch_samples)
-    SV_PILEUP(COORDINATE_SORT.out)
-    AGGREGATE_SV_PILEUP(SV_PILEUP.out)
-    AGGREGATE_SV_PILEUP_TO_BEDPE(AGGREGATE_SV_PILEUP.out)
+        COORDINATE_SORT(ch_samples)
+        SV_PILEUP(COORDINATE_SORT.out)
+        AGGREGATE_SV_PILEUP(SV_PILEUP.out)
+        AGGREGATE_SV_PILEUP_TO_BEDPE(AGGREGATE_SV_PILEUP.out)
+    }
 
     publish:
     sample_outputs = channel.topic('sample_outputs')
