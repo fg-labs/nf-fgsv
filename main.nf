@@ -16,6 +16,10 @@ include { SV_PILEUP } from './modules/sv_pileup.nf'
 params {
     // Path to tab-separated file containing information about the samples in the experiment.
     input: String
+    // `--help` takes either a boolean flag or a parameter name to describe.
+    help: Object = false
+    helpFull: Boolean = false
+    showHidden: Boolean = false
 }
 
 /**
@@ -34,6 +38,18 @@ params {
  */
 workflow {
     main:
+    if( params.help || params.helpFull ) {
+        help_options = [
+            showHidden: params.showHidden,
+            fullHelp: params.helpFull,
+        ]
+        log.info paramsHelp(
+            help_options,
+            (params.help instanceof String && params.help != 'true') ? params.help : '',
+        )
+        exit 0
+    }
+
     validateParameters()
     log.info paramsSummaryLog(workflow)
 
