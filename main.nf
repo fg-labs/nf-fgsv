@@ -34,20 +34,20 @@ workflow {
             [fullHelp: params.helpFull as Boolean, showHidden: params.showHidden as Boolean],
             params.help in [true, 'true'] ? '' : params.help as String
         )
+        exit 0
     }
-    else {
-        validateParameters()
-        log.info paramsSummaryLog(workflow)
 
-        ch_samples = channel
-            .fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
-            .map { meta, bam -> record(meta: meta, bam: bam) }
+    validateParameters()
+    log.info paramsSummaryLog(workflow)
 
-        COORDINATE_SORT(ch_samples)
-        SV_PILEUP(COORDINATE_SORT.out)
-        AGGREGATE_SV_PILEUP(SV_PILEUP.out)
-        AGGREGATE_SV_PILEUP_TO_BEDPE(AGGREGATE_SV_PILEUP.out)
-    }
+    ch_samples = channel
+        .fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
+        .map { meta, bam -> record(meta: meta, bam: bam) }
+
+    COORDINATE_SORT(ch_samples)
+    SV_PILEUP(COORDINATE_SORT.out)
+    AGGREGATE_SV_PILEUP(SV_PILEUP.out)
+    AGGREGATE_SV_PILEUP_TO_BEDPE(AGGREGATE_SV_PILEUP.out)
 
     publish:
     sample_outputs = channel.topic('sample_outputs')
