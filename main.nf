@@ -40,8 +40,8 @@ workflow {
     main:
     if( params.help || params.helpFull ) {
         help_options = [
-            showHidden: params.showHidden as Boolean,
-            fullHelp: params.helpFull as Boolean,
+            showHidden: params.showHidden,
+            fullHelp: params.helpFull,
         ]
         log.info paramsHelp(
             help_options,
