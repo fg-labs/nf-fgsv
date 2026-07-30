@@ -29,10 +29,14 @@ include { SV_PILEUP } from './modules/sv_pileup.nf'
  */
 workflow {
     main:
+    // Handle `--help` here rather than via `validation.help.enabled`: nf-schema prints the
+    // automatic help message from a trace observer that runs *after* the workflow has been
+    // initiated, so it cannot stop the run (nextflow-io/nf-schema#218). This mirrors the
+    // pattern nf-core uses in its `utils_nfschema_plugin` subworkflow.
     if( params.help || params.helpFull ) {
         log.info paramsHelp(
             [fullHelp: params.helpFull as Boolean, showHidden: params.showHidden as Boolean],
-            params.help in [true, 'true'] ? '' : params.help as String
+            (params.help instanceof String && params.help != 'true') ? params.help : ''
         )
         exit 0
     }
