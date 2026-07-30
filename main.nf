@@ -13,6 +13,15 @@ include { AGGREGATE_SV_PILEUP_TO_BEDPE } from './modules/aggregate_sv_pileup_to_
 include { COORDINATE_SORT } from './modules/coordinate_sort.nf'
 include { SV_PILEUP } from './modules/sv_pileup.nf'
 
+params {
+    // Path to tab-separated file containing information about the samples in the experiment.
+    input: String
+    // `--help` takes either a boolean flag or a parameter name to describe.
+    help: Object = false
+    helpFull: Boolean = false
+    showHidden: Boolean = false
+}
+
 /**
  * Detect structural-variant breakpoints from aligned reads using fgsv.
  *
@@ -29,14 +38,14 @@ include { SV_PILEUP } from './modules/sv_pileup.nf'
  */
 workflow {
     main:
-    // Handle `--help` here rather than via `validation.help.enabled`: nf-schema prints the
-    // automatic help message from a trace observer that runs *after* the workflow has been
-    // initiated, so it cannot stop the run (nextflow-io/nf-schema#218). This mirrors the
-    // pattern nf-core uses in its `utils_nfschema_plugin` subworkflow.
     if( params.help || params.helpFull ) {
+        help_options = [
+            showHidden: params.showHidden as Boolean,
+            fullHelp: params.helpFull as Boolean,
+        ]
         log.info paramsHelp(
-            [fullHelp: params.helpFull as Boolean, showHidden: params.showHidden as Boolean],
-            (params.help instanceof String && params.help != 'true') ? params.help : ''
+            help_options,
+            (params.help instanceof String && params.help != 'true') ? params.help : '',
         )
         exit 0
     }
