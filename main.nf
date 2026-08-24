@@ -47,7 +47,11 @@ workflow {
             help_options,
             (params.help instanceof String && params.help != 'true') ? params.help : '',
         )
-        exit 0
+        // `return` here skips the `publish:` section below (both compile into one closure), so the
+        // `sample_outputs` output is never assigned and the run fails with a misleading error:
+        //   Workflow output 'sample_outputs' was declared in the output block but not assigned...
+        // `exit 0` avoids it only because it kills the JVM, but `exit` is @Deprecated.
+        return
     }
 
     validateParameters()
