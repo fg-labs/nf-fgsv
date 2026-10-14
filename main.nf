@@ -15,7 +15,7 @@ include { SV_PILEUP } from './modules/sv_pileup.nf'
 
 params {
     // Path to tab-separated file containing information about the samples in the experiment.
-    input: String
+    input: String?
     // `--help` takes either a boolean flag or a parameter name to describe.
     help: Object = false
     helpFull: Boolean = false
@@ -39,12 +39,11 @@ params {
 workflow {
     main:
     if( params.help || params.helpFull ) {
-        log.info paramsHelp(
+        exit(0, paramsHelp(
             showHidden: params.showHidden,
             fullHelp: params.helpFull,
-            parameter: (params.help instanceof String && params.help != 'true') ? params.help : null,
-        )
-        exit 0
+            parameter: (params.help instanceof String && (params.help as String) != 'true') ? params.help as String : null,
+        ))
     }
 
     validateParameters()
@@ -52,12 +51,12 @@ workflow {
 
     ch_samples = channel
         .fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
-        .map { meta, bam -> record(meta: meta, bam: bam) }
+        .map { row -> record(meta: row[0], bam: row[1]) }
 
-    COORDINATE_SORT(ch_samples)
-    SV_PILEUP(COORDINATE_SORT.out)
-    AGGREGATE_SV_PILEUP(SV_PILEUP.out)
-    AGGREGATE_SV_PILEUP_TO_BEDPE(AGGREGATE_SV_PILEUP.out)
+    ch_sorted = COORDINATE_SORT(ch_samples)
+    ch_pileup = SV_PILEUP(ch_sorted)
+    ch_aggregate = AGGREGATE_SV_PILEUP(ch_pileup)
+    AGGREGATE_SV_PILEUP_TO_BEDPE(ch_aggregate)
 
     publish:
     sample_outputs = channel.topic('sample_outputs')
