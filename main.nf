@@ -39,19 +39,16 @@ params {
 workflow {
     main:
     if( params.help || params.helpFull ) {
-        help_options = [
+        log.info paramsHelp(
             showHidden: params.showHidden,
             fullHelp: params.helpFull,
-        ]
-        log.info paramsHelp(
-            help_options,
-            (params.help instanceof String && params.help != 'true') ? params.help : '',
+            parameter: (params.help instanceof String && params.help != 'true') ? params.help : null,
         )
         exit 0
     }
 
     validateParameters()
-    log.info paramsSummaryLog(workflow)
+    log.info paramsSummaryLog()
 
     ch_samples = channel
         .fromList(samplesheetToList(params.input, "schemas/input_schema.json"))
